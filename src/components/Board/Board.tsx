@@ -15,7 +15,7 @@ import "./Board.css";
  *
  * */
 
-function createBoard(size: BoardDim) {
+function createBoard(size: BoardDim): BoardArray {
   const [w, l] = size;
   return new Array(l).fill([...createRow(w)]);
 }
@@ -57,12 +57,24 @@ function createActivePiece(size: BoardDim): ActivePiece {
 function useGameLoop(size: BoardDim) {
   const [gameLoop, setGameLoop] = useState<GameLoop>({
     board: createBoard(size),
-    tickInterval: 500,
+    tickInterval: 200,
   });
+
+  function reset() {
+    setGameLoop((gl) => ({
+      ...gl,
+      board: createBoard(size),
+      activePiece: undefined,
+    }));
+  }
 
   useInterval(function () {
     if (!gameLoop.activePiece) {
       const newPiece = createActivePiece(size);
+      if (checkForGameOver(gameLoop.board, newPiece)) {
+        alert("GAME OVER");
+        reset();
+      }
       const [newX, newY] = newPiece.pos;
       setGameLoop((gl) => {
         const newBoard = [...gl.board];
@@ -75,11 +87,6 @@ function useGameLoop(size: BoardDim) {
     }
     const { pos } = gameLoop.activePiece;
     const [currX, currY] = pos;
-
-    if (checkForGameOver(gameLoop.board)) {
-      alert("GAME OVER");
-      window.location.reload();
-    }
 
     if (checkForCollisions(gameLoop.board, pos)) {
       setGameLoop((gl) => ({
@@ -124,9 +131,11 @@ function checkForCollisions(board: BoardArray, pos: Pos): boolean {
   return false;
 }
 
-function checkForGameOver(board: BoardArray): boolean {
-  // for now, just check if anything is touching the top row
-  board;
+function checkForGameOver(board: BoardArray, newPiece: ActivePiece): boolean {
+  const [newX, newY] = newPiece.pos;
+  if (board[newY][newX] !== 0) {
+    return true;
+  }
   return false;
 }
 
