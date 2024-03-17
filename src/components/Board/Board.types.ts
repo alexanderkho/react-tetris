@@ -1,6 +1,4 @@
-export type BoardDim = [number, number]; //[width, length]
-
-export type BoardArray = Array<Array<0 | 1>>;
+import { BoardDim } from "../hooks/useGameLoop";
 
 export interface BoardProps {
   size: BoardDim;

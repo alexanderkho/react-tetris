@@ -4,7 +4,7 @@ import { Board } from "./components/Board";
 function App() {
   return (
     <>
-      <Board size={[6, 10]} />
+      <Board size={[7, 12]} />
     </>
   );
 }
