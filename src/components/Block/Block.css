@@ -8,3 +8,11 @@
 .filled {
   background: #838784;
 }
+
+.active {
+  background: red;
+}
+
+.occupied {
+  background: green;
+}

@@ -4,10 +4,21 @@ export type BoardDim = [number, number]; //[width, length]
 
 export type BoardArray = Array<Array<0 | 1>>;
 
-interface GameLoop {
+interface GameState {
+  /**
+   * 2-dimensional array representing the board.
+   * 0 = unoccupied square, 1 = occupied by non-falling square
+   * */
   board: BoardArray;
-  tickInterval: number; // ms
+  /**
+   * the currently in-play piece
+   * holds it's own own x/y position
+   * */
   activePiece?: ActivePiece;
+  /**
+   * fall rate in ms
+   * */
+  tickInterval: number;
 }
 
 interface ActivePiece {
@@ -49,22 +60,22 @@ function createActivePiece(size: BoardDim): ActivePiece {
   return { pos: startingPos };
 }
 
-export function useGameLoop(size: BoardDim): BoardArray {
-  const [gameLoop, setGameLoop] = useState<GameLoop>({
+export function useGameLoop(size: BoardDim): GameState {
+  const [gameState, setGameState] = useState<GameState>({
     board: createBoard(size),
     tickInterval: 100,
   });
 
   function reset() {
-    setGameLoop((gl) => ({
-      ...gl,
+    setGameState((prev) => ({
+      ...prev,
       board: createBoard(size),
       activePiece: undefined,
     }));
   }
 
   function toggleSquares(...coords: Array<Pos>) {
-    const newBoard = [...gameLoop.board];
+    const newBoard = [...gameState.board];
 
     coords.forEach((pos) => {
       const newRow = [...newBoard[pos.y]];
@@ -72,42 +83,46 @@ export function useGameLoop(size: BoardDim): BoardArray {
       newBoard.splice(pos.y, 1, newRow);
     });
 
-    setGameLoop((gl) => ({ ...gl, board: newBoard }));
+    setGameState((prev) => ({ ...prev, board: newBoard }));
   }
 
   useInterval(function () {
-    if (!gameLoop.activePiece) {
+    // add an active piece if one does not exist
+    if (!gameState.activePiece) {
       const newPiece = createActivePiece(size);
-      if (checkForGameOver(gameLoop.board, newPiece)) {
+      if (checkForGameOver(gameState.board, newPiece)) {
         alert("GAME OVER");
         reset();
         return;
       }
-      toggleSquares(newPiece.pos);
-      setGameLoop((gl) => ({ ...gl, activePiece: newPiece }));
+      setGameState((prev) => ({ ...prev, activePiece: newPiece }));
       return;
     }
-    if (checkForCollisions(gameLoop.board, gameLoop.activePiece.pos)) {
-      setGameLoop((gl) => ({
-        ...gl,
+    // if there is a collision:
+    // - save the current active piece pos to board state
+    // - remove the active piece
+    if (checkForCollisions(gameState.board, gameState.activePiece.pos)) {
+      setGameState((prev) => ({
+        ...prev,
         activePiece: undefined,
       }));
+      toggleSquares(gameState.activePiece.pos);
+      // otherwise, move active piece down one square
     } else {
-      const { pos } = gameLoop.activePiece;
+      const { pos } = gameState.activePiece;
       const { x: currX, y: currY } = pos;
       const nextPos: Pos = { x: currX, y: currY + 1 };
 
-      toggleSquares(pos, nextPos);
-      setGameLoop((gl) => {
+      setGameState((prev) => {
         return {
-          ...gl,
-          activePiece: { ...gl.activePiece, pos: nextPos },
+          ...prev,
+          activePiece: { ...prev.activePiece, pos: nextPos },
         };
       });
     }
-  }, gameLoop.tickInterval);
+  }, gameState.tickInterval);
 
-  return gameLoop.board;
+  return gameState;
 }
 
 function checkForCollisions(board: BoardArray, pos: Pos): boolean {
