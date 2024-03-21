@@ -1,12 +1,8 @@
 import { useReducer } from "react";
 import { BoardDim, GameState } from "./types";
-import {
-  checkForCollisions,
-  checkForGameOver,
-  createBoard,
-  useInterval,
-} from "./utils";
+import { checkForCollisions, checkForGameOver, createBoard } from "./utils";
 import { gameReducer } from "./gameReducer";
+import { useInterval } from "../useInterval";
 
 export function useGameLoop(size: BoardDim): GameState {
   const [gameState, dispatch] = useReducer(gameReducer, {
@@ -33,5 +29,3 @@ export function useGameLoop(size: BoardDim): GameState {
 
   return gameState;
 }
-
-// helpers

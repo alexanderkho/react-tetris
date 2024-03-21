@@ -1,4 +1,3 @@
-import { useEffect, useRef } from "react";
 import { ActivePiece, BoardArray, BoardDim, GameState, Pos } from "./types";
 
 export function createBoard(size: BoardDim): BoardArray {
@@ -45,24 +44,4 @@ export function checkForGameOver(state: GameState): boolean {
     return true;
   }
   return false;
-}
-
-export function useInterval(callback: VoidFunction, delay: number) {
-  const savedCallback = useRef<VoidFunction>();
-
-  // Remember the latest callback.
-  useEffect(() => {
-    savedCallback.current = callback;
-  }, [callback]);
-
-  // Set up the interval.
-  useEffect(() => {
-    function tick() {
-      savedCallback.current?.();
-    }
-    if (delay !== null) {
-      const id = setInterval(tick, delay);
-      return () => clearInterval(id);
-    }
-  }, [delay]);
 }
