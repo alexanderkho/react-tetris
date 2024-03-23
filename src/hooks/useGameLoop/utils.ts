@@ -5,7 +5,7 @@ export function createBoard(size: BoardDim): BoardArray {
   return new Array(l).fill([...createRow(w)]);
 }
 
-function createRow(len: number): Array<number> {
+export function createRow(len: number): Array<0 | 1> {
   return new Array(len).fill(0);
 }
 
@@ -19,7 +19,12 @@ export function createActivePiece(size: BoardDim): ActivePiece {
   return { pos: startingPos };
 }
 
-export function checkForCollisions(board: BoardArray, pos: Pos): boolean {
+export function checkForCollisions(state: GameState): boolean {
+  const { board, activePiece } = state;
+  if (!activePiece) {
+    return false;
+  }
+  const { pos } = activePiece;
   const { x, y } = pos;
   const boardHeight = board.length - 1;
 
@@ -44,4 +49,16 @@ export function checkForGameOver(state: GameState): boolean {
     return true;
   }
   return false;
+}
+
+// returns an array with the indices of cleared rows
+export function checkForClearedRows(state: GameState): Array<number> {
+  const { board } = state;
+
+  return board.reduce((acc, row, i) => {
+    if (row.every((s) => s === 1)) {
+      acc.push(i);
+    }
+    return acc;
+  }, [] as Array<number>);
 }

@@ -1,12 +1,13 @@
 import { GameState, Pos } from "./types";
-import { createActivePiece, createBoard } from "./utils";
+import { createActivePiece, createBoard, createRow } from "./utils";
 
 export type GameAction =
   | { type: "CREATE_ACTIVE_PIECE" }
   | { type: "SAVE_PIECE_POSITION" }
   | { type: "GAME_OVER" }
   | { type: "NEXT_TICK" }
-  | { type: "MOVE_ACTIVE_PIECE"; direction: "LEFT" | "RIGHT" };
+  | { type: "MOVE_ACTIVE_PIECE"; direction: "LEFT" | "RIGHT" }
+  | { type: "CLEAR_ROWS"; rows: Array<number> };
 
 export function gameReducer(state: GameState, action: GameAction): GameState {
   switch (action.type) {
@@ -39,6 +40,10 @@ export function gameReducer(state: GameState, action: GameAction): GameState {
       };
     }
     case "NEXT_TICK": {
+      // guard against race condition where action is called before a new piece exists
+      if (!state.activePiece) {
+        return state;
+      }
       const { pos } = state.activePiece!;
       const { x: currX, y: currY } = pos;
       const nextPos: Pos = { x: currX, y: currY + 1 };
@@ -65,6 +70,20 @@ export function gameReducer(state: GameState, action: GameAction): GameState {
       return {
         ...state,
         activePiece: { ...state.activePiece, pos: nextPos },
+      };
+    }
+    // TODO: animation effect on row clear
+    case "CLEAR_ROWS": {
+      const newBoard = [...state.board];
+      const boardWidth = state.size[0];
+
+      action.rows.forEach((r) => {
+        newBoard[r] = createRow(boardWidth);
+      });
+
+      return {
+        ...state,
+        board: newBoard,
       };
     }
     default:
