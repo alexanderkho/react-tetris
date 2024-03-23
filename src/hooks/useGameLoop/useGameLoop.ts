@@ -1,8 +1,9 @@
-import { useReducer } from "react";
+import { Dispatch, useReducer } from "react";
 import { BoardDim, GameState } from "./types";
 import { checkForCollisions, checkForGameOver, createBoard } from "./utils";
-import { gameReducer } from "./gameReducer";
+import { GameAction, gameReducer } from "./gameReducer";
 import { useInterval } from "../useInterval";
+import { useKeydown } from "../useKeydown";
 
 export function useGameLoop(size: BoardDim): GameState {
   const [gameState, dispatch] = useReducer(gameReducer, {
@@ -10,6 +11,7 @@ export function useGameLoop(size: BoardDim): GameState {
     board: createBoard(size),
     tickInterval: 100,
   });
+  useArrowKeys(dispatch);
 
   useInterval(function () {
     if (checkForGameOver(gameState)) {
@@ -28,4 +30,19 @@ export function useGameLoop(size: BoardDim): GameState {
   }, gameState.tickInterval);
 
   return gameState;
+}
+
+enum KeyCode {
+  left = "ArrowLeft",
+  right = "ArrowRight",
+}
+
+function useArrowKeys(dispatch: Dispatch<GameAction>) {
+  const moveLeft = () =>
+    dispatch({ type: "MOVE_ACTIVE_PIECE", direction: "LEFT" });
+  const moveRight = () =>
+    dispatch({ type: "MOVE_ACTIVE_PIECE", direction: "RIGHT" });
+
+  useKeydown(KeyCode.left, moveLeft);
+  useKeydown(KeyCode.right, moveRight);
 }

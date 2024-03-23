@@ -1,13 +1,14 @@
 import { GameState, Pos } from "./types";
 import { createActivePiece, createBoard } from "./utils";
 
-type Action =
+export type GameAction =
   | { type: "CREATE_ACTIVE_PIECE" }
   | { type: "SAVE_PIECE_POSITION" }
   | { type: "GAME_OVER" }
-  | { type: "NEXT_TICK" };
+  | { type: "NEXT_TICK" }
+  | { type: "MOVE_ACTIVE_PIECE"; direction: "LEFT" | "RIGHT" };
 
-export function gameReducer(state: GameState, action: Action): GameState {
+export function gameReducer(state: GameState, action: GameAction): GameState {
   switch (action.type) {
     case "GAME_OVER":
       return {
@@ -42,6 +43,25 @@ export function gameReducer(state: GameState, action: Action): GameState {
       const { x: currX, y: currY } = pos;
       const nextPos: Pos = { x: currX, y: currY + 1 };
 
+      return {
+        ...state,
+        activePiece: { ...state.activePiece, pos: nextPos },
+      };
+    }
+    case "MOVE_ACTIVE_PIECE": {
+      // guard against race condition where action is called before a new piece exists
+      if (!state.activePiece) {
+        return state;
+      }
+      const { pos } = state.activePiece;
+      const nextPos = { ...pos };
+
+      if (action.direction === "LEFT") {
+        nextPos.x = pos.x > 0 ? pos.x - 1 : pos.x;
+      } else {
+        const colLimit = state.board[0].length - 1;
+        nextPos.x = pos.x < colLimit ? pos.x + 1 : pos.x;
+      }
       return {
         ...state,
         activePiece: { ...state.activePiece, pos: nextPos },
