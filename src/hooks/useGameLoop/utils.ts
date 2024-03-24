@@ -9,14 +9,41 @@ export function createRow(len: number): Array<0 | 1> {
   return new Array(len).fill(0);
 }
 
+type Piece = Array<Array<0 | 1>>;
+
+const pieces: Record<string, Piece> = {
+  square: [
+    [1, 1],
+    [1, 1],
+  ],
+  line: [[1], [1], [1], [1]],
+};
+
+function randomPiece(): Piece {
+  const keys = Object.keys(pieces);
+  const randomPieceIdx = Math.floor(Math.random() * keys.length);
+  return pieces[keys[randomPieceIdx]];
+}
+
 export function createActivePiece(size: BoardDim): ActivePiece {
+  const piece = randomPiece();
+  piece;
+
   const boardWidth = size[0];
   const startingPos: Pos = {
     x: Math.floor(boardWidth / 2),
     y: 0,
   };
 
-  return { pos: startingPos };
+  // TODO: stop hard coding this
+  const coords: Array<Pos> = [
+    startingPos,
+    { ...startingPos, y: startingPos.y + 1 },
+    { ...startingPos, x: startingPos.x + 1 },
+    { y: startingPos.y + 1, x: startingPos.x + 1 },
+  ];
+
+  return { coords };
 }
 
 export function checkForCollisions(state: GameState): boolean {
@@ -24,16 +51,18 @@ export function checkForCollisions(state: GameState): boolean {
   if (!activePiece) {
     return false;
   }
-  const { pos } = activePiece;
-  const { x, y } = pos;
-  const boardHeight = board.length - 1;
+  const { coords } = activePiece;
+  const lastRow = board.length - 1;
 
-  if (y >= boardHeight) {
-    return true;
-  }
+  // TODO: can probably just iterate over bottom row here
+  for (const { x, y } of coords) {
+    if (y >= lastRow) {
+      return true;
+    }
 
-  if (board[y + 1][x] !== 0) {
-    return true;
+    if (board[y + 1][x] !== 0) {
+      return true;
+    }
   }
 
   return false;
@@ -44,9 +73,11 @@ export function checkForGameOver(state: GameState): boolean {
   if (!activePiece) {
     return false;
   }
-  const { x, y } = activePiece.pos;
-  if (board[y][x] !== 0) {
-    return true;
+  const { coords } = activePiece;
+  for (const { x, y } of coords) {
+    if (board[y][x] !== 0) {
+      return true;
+    }
   }
   return false;
 }

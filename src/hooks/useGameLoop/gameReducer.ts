@@ -28,10 +28,14 @@ export function gameReducer(state: GameState, action: GameAction): GameState {
       }
       const newBoard = [...state.board];
 
-      const { pos } = state.activePiece;
-      const newRow = [...newBoard[pos.y]];
-      newRow[pos.x] = newRow[pos.x] ? 0 : 1;
-      newBoard.splice(pos.y, 1, newRow);
+      const { coords } = state.activePiece;
+
+      // TODO: can update each row at once to speedup/simplify this
+      for (const { x, y } of coords) {
+        const newRow = [...newBoard[y]];
+        newRow[x] = newRow[x] ? 0 : 1;
+        newBoard.splice(y, 1, newRow);
+      }
 
       return {
         ...state,
@@ -44,13 +48,15 @@ export function gameReducer(state: GameState, action: GameAction): GameState {
       if (!state.activePiece) {
         return state;
       }
-      const { pos } = state.activePiece!;
-      const { x: currX, y: currY } = pos;
-      const nextPos: Pos = { x: currX, y: currY + 1 };
+      const { coords } = state.activePiece;
+      const newCoords: Array<Pos> = coords.map((c) => ({
+        x: c.x,
+        y: c.y + 1,
+      }));
 
       return {
         ...state,
-        activePiece: { ...state.activePiece, pos: nextPos },
+        activePiece: { ...state.activePiece, coords: newCoords },
       };
     }
     case "MOVE_ACTIVE_PIECE": {
@@ -58,18 +64,25 @@ export function gameReducer(state: GameState, action: GameAction): GameState {
       if (!state.activePiece) {
         return state;
       }
-      const { pos } = state.activePiece;
-      const nextPos = { ...pos };
+      const { coords } = state.activePiece;
+      let newCoords: Array<Pos>;
 
       if (action.direction === "LEFT") {
-        nextPos.x = pos.x > 0 ? pos.x - 1 : pos.x;
+        const isPieceAtLeftBound = coords.some((c) => c.x === 0);
+        newCoords = isPieceAtLeftBound
+          ? coords
+          : coords.map((c) => ({ ...c, x: c.x - 1 }));
       } else {
-        const colLimit = state.board[0].length - 1;
-        nextPos.x = pos.x < colLimit ? pos.x + 1 : pos.x;
+        const isPieceAtRightBound = coords.some(
+          (c) => c.x === state.board[0].length - 1,
+        );
+        newCoords = isPieceAtRightBound
+          ? coords
+          : coords.map((c) => ({ ...c, x: c.x + 1 }));
       }
       return {
         ...state,
-        activePiece: { ...state.activePiece, pos: nextPos },
+        activePiece: { ...state.activePiece, coords: newCoords },
       };
     }
     // TODO: animation effect on row clear
