@@ -4,7 +4,7 @@ export interface GameState {
    * the currently in-play piece
    * holds it's own own x/y position
    * */
-  activePiece?: ActivePiece;
+  activePiece?: PieceState;
   /**
    * fall rate in ms
    * */
@@ -32,9 +32,10 @@ export type BoardDim = [number, number]; //[width, length]
  * */
 export type BoardArray = Array<Array<0 | 1>>;
 
-export interface ActivePiece {
+export interface PieceState {
   // pos: Pos;
   coords: Array<Pos>;
+  color: string;
 }
 
 export interface Pos {

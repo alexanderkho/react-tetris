@@ -1,4 +1,5 @@
-import { ActivePiece, BoardArray, BoardDim, GameState, Pos } from "./types";
+import { randomPiece } from "../../types";
+import { PieceState, BoardArray, BoardDim, GameState, Pos } from "./types";
 
 export function createBoard(size: BoardDim): BoardArray {
   const [w, l] = size;
@@ -9,25 +10,8 @@ export function createRow(len: number): Array<0 | 1> {
   return new Array(len).fill(0);
 }
 
-type Piece = Array<Array<0 | 1>>;
-
-const pieces: Record<string, Piece> = {
-  square: [
-    [1, 1],
-    [1, 1],
-  ],
-  line: [[1], [1], [1], [1]],
-};
-
-function randomPiece(): Piece {
-  const keys = Object.keys(pieces);
-  const randomPieceIdx = Math.floor(Math.random() * keys.length);
-  return pieces[keys[randomPieceIdx]];
-}
-
-export function createActivePiece(size: BoardDim): ActivePiece {
-  const piece = randomPiece();
-  piece;
+export function createActivePiece(size: BoardDim): PieceState {
+  const { matrix, color } = randomPiece();
 
   const boardWidth = size[0];
   const startingPos: Pos = {
@@ -35,15 +19,16 @@ export function createActivePiece(size: BoardDim): ActivePiece {
     y: 0,
   };
 
-  // TODO: stop hard coding this
-  const coords: Array<Pos> = [
-    startingPos,
-    { ...startingPos, y: startingPos.y + 1 },
-    { ...startingPos, x: startingPos.x + 1 },
-    { y: startingPos.y + 1, x: startingPos.x + 1 },
-  ];
+  const coords = matrix.reduce((acc, row, y) => {
+    row.forEach((cell, x) => {
+      if (cell) {
+        acc.push({ x: startingPos.x + x, y: startingPos.y + y });
+      }
+    });
+    return acc;
+  }, [] as Array<Pos>);
 
-  return { coords };
+  return { coords, color: color };
 }
 
 export function checkForCollisions(state: GameState): boolean {
