@@ -19,16 +19,7 @@ export function createActivePiece(size: BoardDim): PieceState {
     y: 0,
   };
 
-  const coords = matrix.reduce((acc, row, y) => {
-    row.forEach((cell, x) => {
-      if (cell) {
-        acc.push({ x: startingPos.x + x, y: startingPos.y + y });
-      }
-    });
-    return acc;
-  }, [] as Array<Pos>);
-
-  return { coords, color: color };
+  return { origin: startingPos, matrix, color };
 }
 
 export function checkForCollisions(state: GameState): boolean {
@@ -36,17 +27,21 @@ export function checkForCollisions(state: GameState): boolean {
   if (!activePiece) {
     return false;
   }
-  const { coords } = activePiece;
+  const { matrix } = activePiece;
   const lastRow = board.length - 1;
 
   // TODO: can probably just iterate over bottom row here
-  for (const { x, y } of coords) {
-    if (y >= lastRow) {
-      return true;
-    }
+  for (let y = 0; y < matrix.length; y++) {
+    for (let x = 0; x < matrix[y].length; x++) {
+      if (!matrix[y][x]) return false;
 
-    if (board[y + 1][x] !== 0) {
-      return true;
+      if (y >= lastRow) {
+        return true;
+      }
+
+      if (board[y + 1][x] !== 0) {
+        return true;
+      }
     }
   }
 
@@ -58,10 +53,13 @@ export function checkForGameOver(state: GameState): boolean {
   if (!activePiece) {
     return false;
   }
-  const { coords } = activePiece;
-  for (const { x, y } of coords) {
-    if (board[y][x] !== 0) {
-      return true;
+  const { matrix } = activePiece;
+  for (let y = 0; y < matrix.length; y++) {
+    for (let x = 0; x < matrix[y].length; x++) {
+      // TODO: this is definitely wrong
+      if (board[y][x] !== 0) {
+        return true;
+      }
     }
   }
   return false;
