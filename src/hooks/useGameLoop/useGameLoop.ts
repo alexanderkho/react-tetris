@@ -25,6 +25,13 @@ export function useGameLoop(size: BoardDim): GameState {
   useKeydown(Keys.right, () =>
     dispatch({ type: "MOVE_ACTIVE_PIECE", direction: "RIGHT" }),
   );
+  useKeydown(Keys.down, () => {
+    dispatch({ type: "MOVE_ACTIVE_PIECE", direction: "DOWN" });
+  });
+
+  useKeydown(Keys.space, () => {
+    dispatch({ type: "ROTATE_ACTIVE_PIECE" });
+  });
 
   useInterval(() => dispatch({ type: "NEXT_TICK" }), gameState.tickInterval);
 

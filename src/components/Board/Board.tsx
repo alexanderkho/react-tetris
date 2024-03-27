@@ -7,19 +7,23 @@ import { useGameLoop } from "../../hooks/useGameLoop";
 export const Board: FC<BoardProps> = ({ size }) => {
   const { board, activePiece } = useGameLoop(size);
   const { coords } = activePiece ?? {};
-  return board.map((row, i) => (
-    <div key={i} className="row">
-      {row.map((value, j) => {
-        const isActivePieceSquare =
-          coords?.find((c) => c.x === j && c.y === i) !== undefined;
-        if (isActivePieceSquare) {
-          return <ActiveBlock key={j} />;
-        } else if (value) {
-          return <OccupiedBlock key={j} />;
-        } else {
-          return <Block key={j} />;
-        }
-      })}
+  return (
+    <div className="board">
+      {board.map((row, i) => (
+        <div key={i} className="row">
+          {row.map((value, j) => {
+            const isActivePieceSquare =
+              coords?.find((c) => c.x === j && c.y === i) !== undefined;
+            if (isActivePieceSquare) {
+              return <ActiveBlock key={j} />;
+            } else if (value) {
+              return <OccupiedBlock key={j} />;
+            } else {
+              return <Block key={j} />;
+            }
+          })}
+        </div>
+      ))}
     </div>
-  ));
+  );
 };

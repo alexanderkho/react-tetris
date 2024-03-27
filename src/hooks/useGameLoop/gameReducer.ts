@@ -6,8 +6,9 @@ export type GameAction =
   | { type: "SAVE_PIECE_POSITION" }
   | { type: "GAME_OVER" }
   | { type: "NEXT_TICK" }
-  | { type: "MOVE_ACTIVE_PIECE"; direction: "LEFT" | "RIGHT" }
-  | { type: "CLEAR_ROWS"; rows: Array<number> };
+  | { type: "MOVE_ACTIVE_PIECE"; direction: "LEFT" | "RIGHT" | "DOWN" }
+  | { type: "CLEAR_ROWS"; rows: Array<number> }
+  | { type: "ROTATE_ACTIVE_PIECE" };
 
 export function gameReducer(state: GameState, action: GameAction): GameState {
   switch (action.type) {
@@ -72,13 +73,15 @@ export function gameReducer(state: GameState, action: GameAction): GameState {
         newCoords = isPieceAtLeftBound
           ? coords
           : coords.map((c) => ({ ...c, x: c.x - 1 }));
-      } else {
+      } else if (action.direction === "RIGHT") {
         const isPieceAtRightBound = coords.some(
           (c) => c.x === state.board[0].length - 1,
         );
         newCoords = isPieceAtRightBound
           ? coords
           : coords.map((c) => ({ ...c, x: c.x + 1 }));
+      } else {
+        newCoords = coords.map((c) => ({ ...c, y: c.y + 1 }));
       }
       return {
         ...state,
@@ -98,6 +101,11 @@ export function gameReducer(state: GameState, action: GameAction): GameState {
         ...state,
         board: newBoard,
       };
+    }
+    case "ROTATE_ACTIVE_PIECE": {
+      // TODO:
+      console.log("ROTATE!");
+      return state;
     }
     default:
       return state;
