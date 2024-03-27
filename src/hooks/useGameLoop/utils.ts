@@ -78,3 +78,21 @@ export function checkForClearedRows(state: GameState): Array<number> {
     return acc;
   }, [] as Array<number>);
 }
+
+// interface Rect {
+//   l: Pos; // x/y coord of upper left corner
+//   r: Pos; // x/y coord of bottom right corner
+// }
+
+// export function rotatePiece(piece: PieceState): PieceState {
+//   // find bounding rect of piece
+//   const xCoords = piece.coords.map(c => c.x)
+//   const yCoords = piece.coords.map(c => c.y)
+//   const boundingRect: Rect = {
+//     l: {x: Math.min(...xCoords), y: Math.min(...yCoords)},
+//     r: {x: Math.max(...xCoords), y: Math.max(...yCoords)}
+//   }
+//
+//
+//   min
+// }

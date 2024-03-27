@@ -1,4 +1,4 @@
-type PieceMatrix = Array<Array<0 | 1>>;
+export type PieceMatrix = Array<Array<0 | 1>>;
 
 interface Piece {
   matrix: PieceMatrix;
