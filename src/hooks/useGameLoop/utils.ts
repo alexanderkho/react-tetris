@@ -1,5 +1,12 @@
 import { randomPiece } from "../../types";
-import { PieceState, BoardArray, BoardDim, GameState, Pos } from "./types";
+import {
+  PieceState,
+  BoardArray,
+  BoardDim,
+  GameState,
+  Pos,
+  pieceForEach,
+} from "./types";
 
 export function createBoard(size: BoardDim): BoardArray {
   const [w, l] = size;
@@ -30,22 +37,20 @@ export function checkForCollisions(state: GameState): boolean {
   const { matrix } = activePiece;
   const lastRow = board.length - 1;
 
-  // TODO: can probably just iterate over bottom row here
-  for (let y = 0; y < matrix.length; y++) {
-    for (let x = 0; x < matrix[y].length; x++) {
-      if (!matrix[y][x]) return false;
+  let res = false;
+  pieceForEach(matrix, (x, y) => {
+    if (!matrix[y][x]) return;
 
-      if (y >= lastRow) {
-        return true;
-      }
-
-      if (board[y + 1][x] !== 0) {
-        return true;
-      }
+    if (y >= lastRow) {
+      res = true;
     }
-  }
 
-  return false;
+    if (board[y + 1][x] !== 0) {
+      res = true;
+    }
+  });
+
+  return res;
 }
 
 export function checkForGameOver(state: GameState): boolean {
@@ -54,15 +59,14 @@ export function checkForGameOver(state: GameState): boolean {
     return false;
   }
   const { matrix } = activePiece;
-  for (let y = 0; y < matrix.length; y++) {
-    for (let x = 0; x < matrix[y].length; x++) {
-      // TODO: this is definitely wrong
-      if (board[y][x] !== 0) {
-        return true;
-      }
+  let res = false;
+  pieceForEach(matrix, (x, y) => {
+    // TODO: this is definitely wrong
+    if (board[y][x] !== 0) {
+      res = true;
     }
-  }
-  return false;
+  });
+  return res;
 }
 
 // returns an array with the indices of cleared rows

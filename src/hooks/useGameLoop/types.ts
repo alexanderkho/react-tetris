@@ -40,6 +40,19 @@ export interface PieceState {
   color: string;
 }
 
+export function pieceForEach(
+  matrix: PieceMatrix,
+  cb: (row: number, col: number) => void,
+) {
+  for (let y = 0; y < matrix.length; y++) {
+    for (let x = 0; x < matrix[y].length; x++) {
+      if (matrix[y][x]) {
+        cb(x, y);
+      }
+    }
+  }
+}
+
 export interface Pos {
   x: number; // horizontal
   y: number; // vertical
