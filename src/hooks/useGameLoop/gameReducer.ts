@@ -1,4 +1,4 @@
-import { newPiece, pieceToBoardCoordinates } from "../../types";
+import { newPiece, pieceToBoardCoordinates, rotatePiece } from "../../types";
 import { GameState, Pos } from "./types";
 import { createBoard, createRow } from "./utils";
 
@@ -101,8 +101,17 @@ export function gameReducer(state: GameState, action: GameAction): GameState {
     }
     case "ROTATE_ACTIVE_PIECE": {
       // TODO:
-      console.log("ROTATE!");
-      return state;
+      if (!state.activePiece) {
+        return state;
+      }
+
+      return {
+        ...state,
+        activePiece: {
+          ...state.activePiece,
+          layout: rotatePiece(state.activePiece.layout),
+        },
+      };
     }
     default:
       return state;

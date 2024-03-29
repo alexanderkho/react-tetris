@@ -72,12 +72,10 @@ export function randomPiece(): PieceProto {
   return Pieces[keys[randomPieceIdx]];
 }
 
-type Rotation = 0 | 90 | 180 | 270;
-
 export interface PieceState {
   proto: PieceProto;
   pos: Pos;
-  rotation: Rotation;
+  layout: PieceMatrix;
 }
 
 export function newPiece(size: BoardDim): PieceState {
@@ -89,18 +87,19 @@ export function newPiece(size: BoardDim): PieceState {
     y: 0,
   };
 
-  return { proto, pos: startingPos, rotation: 0 };
+  return { proto, pos: startingPos, layout: proto.matrix };
 }
 
 type Coords = Array<Pos>;
 
 export function pieceToBoardCoordinates(piece: PieceState): Coords {
-  const { proto, pos, rotation } = piece;
-  // TODO: handle rotation
-  rotation;
-  const { origin, matrix } = proto;
+  const {
+    proto: { origin },
+    pos,
+    layout,
+  } = piece;
 
-  return matrix.reduce((acc, row, y) => {
+  return layout.reduce((acc, row, y) => {
     row.forEach((cell, x) => {
       if (cell) {
         const offsetX = x - origin[1];
@@ -110,4 +109,18 @@ export function pieceToBoardCoordinates(piece: PieceState): Coords {
     });
     return acc;
   }, [] as Array<Pos>);
+}
+
+export function rotatePiece(layout: PieceMatrix): PieceMatrix {
+  const roatatedMatrix: PieceMatrix = [];
+
+  for (let x = 0; x < layout[0].length; x++) {
+    const newRow: Array<0 | 1> = [];
+    for (let y = layout.length - 1; y >= 0; y--) {
+      newRow.push(layout[y][x]);
+    }
+    roatatedMatrix.push(newRow);
+  }
+
+  return roatatedMatrix;
 }

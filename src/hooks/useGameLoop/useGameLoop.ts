@@ -15,7 +15,7 @@ export function useGameLoop(size: BoardDim): GameState {
   const [gameState, dispatch] = useReducer(gameReducer, {
     size: size,
     board: createBoard(size),
-    tickInterval: 200,
+    tickInterval: 800,
   });
 
   // keydown handlers
