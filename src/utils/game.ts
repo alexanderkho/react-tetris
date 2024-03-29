@@ -1,4 +1,4 @@
-import { GameState } from "../types";
+import { GameState, Pos } from "../types";
 import { pieceToBoardCoordinates } from "./piece";
 
 export function checkForCollisions(state: GameState): boolean {
@@ -48,4 +48,51 @@ export function checkForClearedRows(state: GameState): Array<number> {
     }
     return acc;
   }, [] as Array<number>);
+}
+
+export enum Direction {
+  LEFT = "LEFT",
+  RIGHT = "RIGHT",
+  DOWN = "DOWN",
+}
+
+const directionToOffset: Record<Direction, Pos> = {
+  LEFT: { y: 0, x: -1 },
+  RIGHT: { y: 0, x: 1 },
+  DOWN: { y: 1, x: 0 },
+};
+
+// reducers
+export function moveActivePiece(
+  state: GameState,
+  direction: Direction,
+): GameState {
+  // guard against race condition where action is called before a new piece exists
+  if (!state.activePiece) {
+    return state;
+  }
+  const { pos } = state.activePiece;
+  const coords = pieceToBoardCoordinates(state.activePiece);
+
+  const offset = directionToOffset[direction];
+  const requestedPos = { x: pos.x + offset.x, y: pos.y + offset.y };
+  const requestedCoords = coords.map((c) => ({
+    x: c.x + offset.x,
+    y: c.y + offset.y,
+  }));
+
+  const canMove = requestedCoords.every(
+    (c) =>
+      c.x >= 0 &&
+      c.x < state.board[0].length &&
+      c.y < state.board.length &&
+      state.board[c.y][c.x] === 0,
+  );
+
+  const newPos = canMove ? requestedPos : pos;
+
+  return {
+    ...state,
+    activePiece: { ...state.activePiece, pos: newPos },
+  };
 }

@@ -1,7 +1,8 @@
-import { Pos } from "../../types";
 import {
+  Direction,
   createBoard,
   createRow,
+  moveActivePiece,
   newPiece,
   pieceToBoardCoordinates,
   rotatePiece,
@@ -13,7 +14,7 @@ export type GameAction =
   | { type: "SAVE_PIECE_POSITION" }
   | { type: "GAME_OVER" }
   | { type: "NEXT_TICK" }
-  | { type: "MOVE_ACTIVE_PIECE"; direction: "LEFT" | "RIGHT" | "DOWN" }
+  | { type: "MOVE_ACTIVE_PIECE"; direction: Direction }
   | { type: "CLEAR_ROWS"; rows: Array<number> }
   | { type: "ROTATE_ACTIVE_PIECE" };
 
@@ -68,28 +69,7 @@ export function gameReducer(state: GameState, action: GameAction): GameState {
     }
     case "MOVE_ACTIVE_PIECE": {
       // guard against race condition where action is called before a new piece exists
-      if (!state.activePiece) {
-        return state;
-      }
-      const { pos } = state.activePiece;
-      const coords = pieceToBoardCoordinates(state.activePiece);
-      let newPos: Pos;
-
-      if (action.direction === "LEFT") {
-        const isPieceAtLeftBound = coords.some((c) => c.x === 0);
-        newPos = isPieceAtLeftBound ? pos : { ...pos, x: pos.x - 1 };
-      } else if (action.direction === "RIGHT") {
-        const isPieceAtRightBound = coords.some(
-          (c) => c.x === state.board[0].length - 1,
-        );
-        newPos = isPieceAtRightBound ? pos : { ...pos, x: pos.x + 1 };
-      } else {
-        newPos = { ...pos, y: pos.y + 1 };
-      }
-      return {
-        ...state,
-        activePiece: { ...state.activePiece, pos: newPos },
-      };
+      return moveActivePiece(state, action.direction);
     }
     // TODO: animation effect on row clear
     case "CLEAR_ROWS": {
