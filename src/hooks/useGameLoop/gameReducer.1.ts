@@ -1,19 +1,7 @@
 import { createBoard, createRow, newPiece, rotatePiece } from "../../utils";
-import {
-  Direction,
-  moveActivePiece,
-  saveActivePiecePosition,
-} from "./gameReducer.utils";
+import { moveActivePiece, saveActivePiecePosition } from "./gameReducer.utils";
 import { GameState } from "./types";
-
-export type GameAction =
-  | { type: "CREATE_ACTIVE_PIECE" }
-  | { type: "SAVE_PIECE_POSITION" }
-  | { type: "GAME_OVER" }
-  | { type: "NEXT_TICK" }
-  | { type: "MOVE_ACTIVE_PIECE"; direction: Direction }
-  | { type: "CLEAR_ROWS"; rows: Array<number> }
-  | { type: "ROTATE_ACTIVE_PIECE" };
+import { GameAction } from "./gameReducer";
 
 export function gameReducer(state: GameState, action: GameAction): GameState {
   switch (action.type) {
