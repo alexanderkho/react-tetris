@@ -1,15 +1,16 @@
 import { useEffect, useReducer } from "react";
-import { BoardDim, GameState } from "./types";
+import { GameState } from "./types";
+import { gameReducer } from "./gameReducer";
+import { useInterval } from "../useInterval";
+import { useKeydown } from "../useKeydown";
+import { Keys } from "../useKeydown/keys";
+import { BoardDim } from "../../types";
 import {
   checkForClearedRows,
   checkForCollisions,
   checkForGameOver,
   createBoard,
-} from "./utils";
-import { gameReducer } from "./gameReducer";
-import { useInterval } from "../useInterval";
-import { useKeydown } from "../useKeydown";
-import { Keys } from "../useKeydown/keys";
+} from "../../utils";
 
 export function useGameLoop(size: BoardDim): GameState {
   const [gameState, dispatch] = useReducer(gameReducer, {

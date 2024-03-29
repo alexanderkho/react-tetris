@@ -1,6 +1,12 @@
-import { newPiece, pieceToBoardCoordinates, rotatePiece } from "../../types";
-import { GameState, Pos } from "./types";
-import { createBoard, createRow } from "./utils";
+import { Pos } from "../../types";
+import {
+  createBoard,
+  createRow,
+  newPiece,
+  pieceToBoardCoordinates,
+  rotatePiece,
+} from "../../utils";
+import { GameState } from "./types";
 
 export type GameAction =
   | { type: "CREATE_ACTIVE_PIECE" }

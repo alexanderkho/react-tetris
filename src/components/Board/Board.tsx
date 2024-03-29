@@ -3,7 +3,7 @@ import { BoardProps } from "./Board.types";
 import { ActiveBlock, Block, OccupiedBlock } from "../Block";
 import "./Board.css";
 import { useGameLoop } from "../../hooks/useGameLoop";
-import { pieceToBoardCoordinates } from "../../types";
+import { pieceToBoardCoordinates } from "../../utils/piece";
 
 export const Board: FC<BoardProps> = ({ size }) => {
   const { board, activePiece } = useGameLoop(size);

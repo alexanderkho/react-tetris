@@ -1,14 +1,5 @@
-import { pieceToBoardCoordinates } from "../../types";
-import { BoardArray, BoardDim, GameState } from "./types";
-
-export function createBoard(size: BoardDim): BoardArray {
-  const [w, l] = size;
-  return new Array(l).fill([...createRow(w)]);
-}
-
-export function createRow(len: number): Array<0 | 1> {
-  return new Array(len).fill(0);
-}
+import { GameState } from "../types";
+import { pieceToBoardCoordinates } from "./piece";
 
 export function checkForCollisions(state: GameState): boolean {
   const { board, activePiece } = state;
@@ -39,6 +30,7 @@ export function checkForGameOver(state: GameState): boolean {
   }
   const coords = pieceToBoardCoordinates(activePiece);
   for (const { x, y } of coords) {
+    // TODO: this is probably wrong
     if (board[y][x] !== 0) {
       return true;
     }
@@ -57,21 +49,3 @@ export function checkForClearedRows(state: GameState): Array<number> {
     return acc;
   }, [] as Array<number>);
 }
-
-// interface Rect {
-//   l: Pos; // x/y coord of upper left corner
-//   r: Pos; // x/y coord of bottom right corner
-// }
-
-// export function rotatePiece(piece: PieceState): PieceState {
-//   // find bounding rect of piece
-//   const xCoords = piece.coords.map(c => c.x)
-//   const yCoords = piece.coords.map(c => c.y)
-//   const boundingRect: Rect = {
-//     l: {x: Math.min(...xCoords), y: Math.min(...yCoords)},
-//     r: {x: Math.max(...xCoords), y: Math.max(...yCoords)}
-//   }
-//
-//
-//   min
-// }

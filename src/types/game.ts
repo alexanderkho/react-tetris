@@ -1,4 +1,5 @@
-import { BoardArray, BoardDim, PieceState } from "../../types";
+import { BoardArray, BoardDim } from "./board";
+import { PieceState } from "./piece";
 
 export interface GameState {
   board: BoardArray;

@@ -1,81 +1,17 @@
-import { BoardDim, Pos } from "../hooks/useGameLoop";
-
-export type PieceMatrix = Array<Array<0 | 1>>;
-
-export interface PieceProto {
-  matrix: PieceMatrix;
-  color: string;
-  origin: [number, number]; // [col, row]
-}
-
-export const Pieces: Record<string, PieceProto> = {
-  square: {
-    matrix: [
-      [1, 1],
-      [1, 1],
-    ],
-    color: "blue",
-    origin: [0, 0],
-  },
-  line: {
-    matrix: [[1], [1], [1], [1]],
-    color: "orange",
-    origin: [0, 0],
-  },
-  skew: {
-    matrix: [
-      [0, 1, 1],
-      [1, 1, 0],
-    ],
-    color: "green",
-    origin: [0, 1],
-  },
-  skewReverse: {
-    matrix: [
-      [1, 1, 0],
-      [0, 1, 1],
-    ],
-    color: "yellow",
-    origin: [0, 1],
-  },
-  tee: {
-    matrix: [
-      [1, 1, 1],
-      [0, 1, 0],
-    ],
-    color: "cyan",
-    origin: [0, 1],
-  },
-  ell: {
-    matrix: [
-      [1, 0],
-      [1, 0],
-      [1, 1],
-    ],
-    color: "red",
-    origin: [0, 0],
-  },
-  ellReverse: {
-    matrix: [
-      [0, 1],
-      [0, 1],
-      [1, 1],
-    ],
-    color: "magenta",
-    origin: [0, 0],
-  },
-};
+import {
+  BoardDim,
+  Coords,
+  PieceMatrix,
+  PieceProto,
+  PieceState,
+  Pieces,
+  Pos,
+} from "../types";
 
 export function randomPiece(): PieceProto {
   const keys = Object.keys(Pieces);
   const randomPieceIdx = Math.floor(Math.random() * keys.length);
   return Pieces[keys[randomPieceIdx]];
-}
-
-export interface PieceState {
-  proto: PieceProto;
-  pos: Pos;
-  layout: PieceMatrix;
 }
 
 export function newPiece(size: BoardDim): PieceState {
@@ -89,8 +25,6 @@ export function newPiece(size: BoardDim): PieceState {
 
   return { proto, pos: startingPos, layout: proto.matrix };
 }
-
-type Coords = Array<Pos>;
 
 export function pieceToBoardCoordinates(piece: PieceState): Coords {
   const {
