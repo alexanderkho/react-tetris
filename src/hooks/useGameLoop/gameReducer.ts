@@ -1,5 +1,6 @@
+import { newPiece, pieceToBoardCoordinates } from "../../types";
 import { GameState, Pos } from "./types";
-import { createActivePiece, createBoard, createRow } from "./utils";
+import { createBoard, createRow } from "./utils";
 
 export type GameAction =
   | { type: "CREATE_ACTIVE_PIECE" }
@@ -21,7 +22,7 @@ export function gameReducer(state: GameState, action: GameAction): GameState {
     case "CREATE_ACTIVE_PIECE":
       return {
         ...state,
-        activePiece: createActivePiece(state.size),
+        activePiece: newPiece(state.size),
       };
     case "SAVE_PIECE_POSITION": {
       if (state.activePiece === undefined) {
@@ -29,7 +30,7 @@ export function gameReducer(state: GameState, action: GameAction): GameState {
       }
       const newBoard = [...state.board];
 
-      const { coords } = state.activePiece;
+      const coords = pieceToBoardCoordinates(state.activePiece);
 
       // TODO: can update each row at once to speedup/simplify this
       for (const { x, y } of coords) {
@@ -49,15 +50,14 @@ export function gameReducer(state: GameState, action: GameAction): GameState {
       if (!state.activePiece) {
         return state;
       }
-      const { coords } = state.activePiece;
-      const newCoords: Array<Pos> = coords.map((c) => ({
-        x: c.x,
-        y: c.y + 1,
-      }));
 
+      const currentPos = state.activePiece.pos;
       return {
         ...state,
-        activePiece: { ...state.activePiece, coords: newCoords },
+        activePiece: {
+          ...state.activePiece,
+          pos: { ...currentPos, y: currentPos.y + 1 },
+        },
       };
     }
     case "MOVE_ACTIVE_PIECE": {
@@ -65,27 +65,24 @@ export function gameReducer(state: GameState, action: GameAction): GameState {
       if (!state.activePiece) {
         return state;
       }
-      const { coords } = state.activePiece;
-      let newCoords: Array<Pos>;
+      const { pos } = state.activePiece;
+      const coords = pieceToBoardCoordinates(state.activePiece);
+      let newPos: Pos;
 
       if (action.direction === "LEFT") {
         const isPieceAtLeftBound = coords.some((c) => c.x === 0);
-        newCoords = isPieceAtLeftBound
-          ? coords
-          : coords.map((c) => ({ ...c, x: c.x - 1 }));
+        newPos = isPieceAtLeftBound ? pos : { ...pos, x: pos.x - 1 };
       } else if (action.direction === "RIGHT") {
         const isPieceAtRightBound = coords.some(
           (c) => c.x === state.board[0].length - 1,
         );
-        newCoords = isPieceAtRightBound
-          ? coords
-          : coords.map((c) => ({ ...c, x: c.x + 1 }));
+        newPos = isPieceAtRightBound ? pos : { ...pos, x: pos.x + 1 };
       } else {
-        newCoords = coords.map((c) => ({ ...c, y: c.y + 1 }));
+        newPos = { ...pos, y: pos.y + 1 };
       }
       return {
         ...state,
-        activePiece: { ...state.activePiece, coords: newCoords },
+        activePiece: { ...state.activePiece, pos: newPos },
       };
     }
     // TODO: animation effect on row clear

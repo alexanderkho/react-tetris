@@ -1,5 +1,5 @@
-import { randomPiece } from "../../types";
-import { PieceState, BoardArray, BoardDim, GameState, Pos } from "./types";
+import { pieceToBoardCoordinates } from "../../types";
+import { BoardArray, BoardDim, GameState } from "./types";
 
 export function createBoard(size: BoardDim): BoardArray {
   const [w, l] = size;
@@ -10,33 +10,12 @@ export function createRow(len: number): Array<0 | 1> {
   return new Array(len).fill(0);
 }
 
-export function createActivePiece(size: BoardDim): PieceState {
-  const { matrix, color } = randomPiece();
-
-  const boardWidth = size[0];
-  const startingPos: Pos = {
-    x: Math.floor(boardWidth / 2),
-    y: 0,
-  };
-
-  const coords = matrix.reduce((acc, row, y) => {
-    row.forEach((cell, x) => {
-      if (cell) {
-        acc.push({ x: startingPos.x + x, y: startingPos.y + y });
-      }
-    });
-    return acc;
-  }, [] as Array<Pos>);
-
-  return { coords, color: color };
-}
-
 export function checkForCollisions(state: GameState): boolean {
   const { board, activePiece } = state;
   if (!activePiece) {
     return false;
   }
-  const { coords } = activePiece;
+  const coords = pieceToBoardCoordinates(activePiece);
   const lastRow = board.length - 1;
 
   // TODO: can probably just iterate over bottom row here
@@ -58,7 +37,7 @@ export function checkForGameOver(state: GameState): boolean {
   if (!activePiece) {
     return false;
   }
-  const { coords } = activePiece;
+  const coords = pieceToBoardCoordinates(activePiece);
   for (const { x, y } of coords) {
     if (board[y][x] !== 0) {
       return true;

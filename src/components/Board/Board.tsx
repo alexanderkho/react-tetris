@@ -3,10 +3,12 @@ import { BoardProps } from "./Board.types";
 import { ActiveBlock, Block, OccupiedBlock } from "../Block";
 import "./Board.css";
 import { useGameLoop } from "../../hooks/useGameLoop";
+import { pieceToBoardCoordinates } from "../../types";
 
 export const Board: FC<BoardProps> = ({ size }) => {
   const { board, activePiece } = useGameLoop(size);
-  const { coords } = activePiece ?? {};
+  // const { coords } = activePiece ?? {};
+  const coords = activePiece ? pieceToBoardCoordinates(activePiece) : null;
   return (
     <div className="board">
       {board.map((row, i) => (

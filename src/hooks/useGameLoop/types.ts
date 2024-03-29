@@ -1,3 +1,5 @@
+import { PieceState } from "../../types";
+
 export interface GameState {
   board: BoardArray;
   /**
@@ -31,11 +33,6 @@ export type BoardDim = [number, number]; //[width, length]
  *
  * */
 export type BoardArray = Array<Array<0 | 1>>;
-
-export interface PieceState {
-  coords: Array<Pos>;
-  color: string;
-}
 
 export interface Pos {
   x: number; // horizontal
