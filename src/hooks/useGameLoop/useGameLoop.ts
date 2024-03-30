@@ -44,7 +44,7 @@ export function useGameLoop(size: BoardDim): UseGameLoopReturn {
       console.log("game over", gameState);
       dispatch({ type: "GAME_OVER" });
     } else if (!gameState.activePiece) {
-      dispatch({ type: "CREATE_ACTIVE_PIECE" });
+      dispatch({ type: "NEXT_PIECE" });
       return;
     }
 

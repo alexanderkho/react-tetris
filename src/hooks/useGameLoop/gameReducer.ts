@@ -8,7 +8,7 @@ import {
 } from "./gameReducer.utils";
 
 export type GameAction =
-  | { type: "CREATE_ACTIVE_PIECE" }
+  | { type: "NEXT_PIECE" }
   | { type: "SAVE_PIECE_POSITION" }
   | { type: "GAME_OVER" }
   | { type: "NEXT_TICK" }
@@ -25,11 +25,17 @@ export function gameReducer(state: GameState, action: GameAction): GameState {
         ...state,
         status: "game-over",
       };
-    case "CREATE_ACTIVE_PIECE":
+    case "NEXT_PIECE": {
+      const nextQueue = [...state.pieceQueue];
+      const nextPiece = nextQueue.shift();
+      nextQueue.push(newPiece(state.size));
+      console.log("ok you guys here comes the next queue!", nextQueue);
       return {
         ...state,
-        activePiece: newPiece(state.size),
+        activePiece: nextPiece,
+        pieceQueue: nextQueue,
       };
+    }
     case "SAVE_PIECE_POSITION":
       return saveActivePiecePosition(state);
     case "NEXT_TICK": {

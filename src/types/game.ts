@@ -1,4 +1,4 @@
-import { createBoard } from "../utils";
+import { createBoard, initializePieceQueue } from "../utils";
 import { BoardArray, BoardDim } from "./board";
 import { PieceState } from "./piece";
 
@@ -22,6 +22,8 @@ export interface GameState {
    * number of lines cleared
    * */
   score: number;
+  // TODO: should this be PieceProto?
+  pieceQueue: Array<PieceState>;
 }
 
 export function newDefaultGameState(size: BoardDim): GameState {
@@ -31,5 +33,6 @@ export function newDefaultGameState(size: BoardDim): GameState {
     tickInterval: 400,
     status: "active",
     score: 0,
+    pieceQueue: initializePieceQueue(size),
   };
 }

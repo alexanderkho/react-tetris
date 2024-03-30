@@ -8,14 +8,14 @@ import {
   Pos,
 } from "../types";
 
-export function randomPiece(): PieceProto {
+export function getRandomPieceProto(): PieceProto {
   const keys = Object.keys(Pieces);
   const randomPieceIdx = Math.floor(Math.random() * keys.length);
   return Pieces[keys[randomPieceIdx]];
 }
 
 export function newPiece(size: BoardDim): PieceState {
-  const proto = randomPiece();
+  const proto = getRandomPieceProto();
 
   const boardWidth = size[0];
   const startingPos: Pos = {
@@ -24,6 +24,17 @@ export function newPiece(size: BoardDim): PieceState {
   };
 
   return { proto, pos: startingPos, layout: proto.matrix };
+}
+
+export function initializePieceQueue(
+  boardSize: BoardDim,
+  queueSize: number = 4,
+): Array<PieceState> {
+  const queue = [];
+  for (let i = 0; i < queueSize; i++) {
+    queue.push(newPiece(boardSize));
+  }
+  return queue;
 }
 
 export function pieceToBoardCoordinates(piece: PieceState): Coords {
