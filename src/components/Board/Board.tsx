@@ -16,7 +16,7 @@ export const Board: FC<BoardProps> = ({ state }) => {
       <div className="board">
         {board.map((row, i) => (
           <div key={i} className="row">
-            {row.map((value, j) => {
+            {row.map((square, j) => {
               const isActivePieceSquare =
                 pieceCoords?.find((c) => c.x === j && c.y === i) !== undefined;
 
@@ -24,11 +24,13 @@ export const Board: FC<BoardProps> = ({ state }) => {
                 projectionCoords?.find((c) => c.x === j && c.y === i) !==
                 undefined;
               if (isActivePieceSquare) {
-                return <ActiveBlock key={j} />;
-              } else if (value) {
-                return <OccupiedBlock key={j} />;
+                return <ActiveBlock key={j} color={activePiece?.proto.color} />;
+              } else if (square.value) {
+                return <OccupiedBlock key={j} color={board[i][j].color} />;
               } else if (isPieceProjectionSquare) {
-                return <ProjectionBlock key={j} />;
+                return (
+                  <ProjectionBlock key={j} color={activePiece?.proto.color} />
+                );
               } else {
                 return <Block key={j} />;
               }

@@ -83,7 +83,7 @@ export function getTerminalPiecePosition(state: GameState): Pos {
   while (!dropPos) {
     const nextOffset = i + 1;
     const nextCoords = coords.map((c) => ({ ...c, y: c.y + nextOffset }));
-    if (nextCoords.some((c) => state.board[c.y]?.[c.x] === 1)) {
+    if (nextCoords.some((c) => state.board[c.y]?.[c.x]?.value === 1)) {
       dropPos = { ...pos, y: pos.y + i };
     } else if (nextCoords.some((c) => c.y === state.board.length - 1)) {
       dropPos = { ...pos, y: pos.y + nextOffset };

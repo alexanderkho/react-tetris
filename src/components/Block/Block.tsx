@@ -1,37 +1,29 @@
 import { FC } from "react";
 import "./Block.css";
 
-interface BaseBlockProps {
+interface BlockProps extends BaseBlockProps {
   variant?: "active" | "inactive" | "occupied" | "projection";
 }
 
-export const Block: FC<BaseBlockProps> = ({ variant = "inactive" }) => {
-  // let className = "block";
-  // switch (variant) {
-  //   case "active":
-  //     className += " block active";
-  //     break;
-  //   case "occupied":
-  //     className += " block occupied";
-  //     break;
-  //   case "projection":
-  //     claseName +=
-  //   default:
-  //     break;
-  // }
+interface BaseBlockProps {
+  color?: string;
+}
+
+export const Block: FC<BlockProps> = ({ variant = "inactive", color }) => {
   const className = `block ${variant}`;
+  const style = color ? { background: color } : {};
 
-  return <div className={className} />;
+  return <div className={className} style={style} />;
 };
 
-export const ActiveBlock: FC = () => {
-  return <Block variant="active" />;
+export const ActiveBlock: FC<BaseBlockProps> = ({ color }) => {
+  return <Block variant="active" color={color} />;
 };
 
-export const OccupiedBlock: FC = () => {
-  return <Block variant="occupied" />;
+export const OccupiedBlock: FC<BaseBlockProps> = ({ color }) => {
+  return <Block variant="occupied" color={color} />;
 };
 
-export const ProjectionBlock: FC = () => {
-  return <Block variant="projection" />;
+export const ProjectionBlock: FC<BaseBlockProps> = ({ color }) => {
+  return <Block variant="projection" color={color} />;
 };

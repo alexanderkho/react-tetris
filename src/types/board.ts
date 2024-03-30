@@ -11,7 +11,19 @@
  * ]
  *
  * */
-export type BoardArray = Array<Array<0 | 1>>;
+type UnoccupiedSquare = {
+  value: 0;
+  color?: never;
+};
+
+type OccupiedSquare = {
+  value: 1;
+  color: string;
+};
+
+export type Square = UnoccupiedSquare | OccupiedSquare;
+
+export type BoardArray = Array<Array<Square>>;
 
 export type BoardDim = [number, number]; //[width, length]
 

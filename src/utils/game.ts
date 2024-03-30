@@ -15,7 +15,7 @@ export function checkForCollisions(state: GameState): boolean {
       return true;
     }
 
-    if (board[y + 1][x] !== 0) {
+    if (board[y + 1][x].value !== 0) {
       return true;
     }
   }
@@ -25,7 +25,7 @@ export function checkForCollisions(state: GameState): boolean {
 
 export function checkForGameOver(state: GameState): boolean {
   const { board } = state;
-  return board[0].some((c) => c === 1);
+  return board[0].some((s) => s.value === 1);
 }
 
 // returns an array with the indices of cleared rows
@@ -33,7 +33,7 @@ export function checkForClearedRows(state: GameState): Array<number> {
   const { board } = state;
 
   return board.reduce((acc, row, i) => {
-    if (row.every((s) => s === 1)) {
+    if (row.every((s) => s.value === 1)) {
       acc.push(i);
     }
     return acc;

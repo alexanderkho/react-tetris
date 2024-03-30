@@ -40,7 +40,7 @@ export function moveActivePiece(
       c.x >= 0 &&
       c.x < state.board[0].length &&
       c.y < state.board.length &&
-      state.board[c.y][c.x] === 0,
+      state.board[c.y][c.x].value === 0,
   );
 
   const newPos = canMove ? requestedPos : pos;
@@ -62,7 +62,8 @@ export function saveActivePiecePosition(state: GameState): GameState {
   // TODO: can update each row at once to speedup/simplify this
   for (const { x, y } of coords) {
     const newRow = [...newBoard[y]];
-    newRow[x] = newRow[x] ? 0 : 1;
+    newRow[x] = { value: 1, color: state.activePiece.proto.color };
+
     newBoard.splice(y, 1, newRow);
   }
 

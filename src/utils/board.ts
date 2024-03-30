@@ -1,10 +1,10 @@
-import { BoardArray, BoardDim } from "../types";
+import { BoardArray, BoardDim, Square } from "../types";
 
 export function createBoard(size: BoardDim): BoardArray {
   const [w, l] = size;
   return new Array(l).fill([...createRow(w)]);
 }
 
-export function createRow(len: number): Array<0 | 1> {
-  return new Array(len).fill(0);
+export function createRow(len: number): Array<Square> {
+  return new Array(len).fill({ value: 0 });
 }

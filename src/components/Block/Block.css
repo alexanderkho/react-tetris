@@ -1,10 +1,6 @@
 .block {
-  border: 1px solid #838784;
+  border: 1px solid rgba(104, 103, 110, 0.2);
   flex-grow: 1;
-}
-
-.active {
-  background: red;
 }
 
 .occupied {
@@ -12,5 +8,5 @@
 }
 
 .projection {
-  background: rgba(138, 39, 194, 0.4);
+  opacity: 0.4;
 }

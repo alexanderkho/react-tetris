@@ -16,13 +16,13 @@ export const Pieces: Record<string, PieceProto> = {
       [1, 1],
       [1, 1],
     ],
-    color: "blue",
+    color: "#5879db",
     origin: [0, 0],
   },
   line: {
     name: "Line",
     matrix: [[1], [1], [1], [1]],
-    color: "orange",
+    color: "#fcba03",
     origin: [0, 0],
   },
   skew: {
@@ -31,7 +31,7 @@ export const Pieces: Record<string, PieceProto> = {
       [0, 1, 1],
       [1, 1, 0],
     ],
-    color: "green",
+    color: "#edf55b",
     origin: [0, 1],
   },
   skewReverse: {
@@ -40,7 +40,7 @@ export const Pieces: Record<string, PieceProto> = {
       [1, 1, 0],
       [0, 1, 1],
     ],
-    color: "yellow",
+    color: "#5dbf08",
     origin: [0, 1],
   },
   tee: {
@@ -49,7 +49,7 @@ export const Pieces: Record<string, PieceProto> = {
       [1, 1, 1],
       [0, 1, 0],
     ],
-    color: "cyan",
+    color: "#09e8d2",
     origin: [0, 1],
   },
   ell: {
@@ -59,7 +59,7 @@ export const Pieces: Record<string, PieceProto> = {
       [1, 0],
       [1, 1],
     ],
-    color: "red",
+    color: "#e3104f",
     origin: [0, 0],
   },
   ellReverse: {
@@ -69,7 +69,7 @@ export const Pieces: Record<string, PieceProto> = {
       [0, 1],
       [1, 1],
     ],
-    color: "magenta",
+    color: "#9210e8",
     origin: [0, 0],
   },
 };
