@@ -1,6 +1,7 @@
 import {
   BoardDim,
   Coords,
+  GameState,
   PieceMatrix,
   PieceProto,
   PieceState,
@@ -68,4 +69,38 @@ export function rotatePiece(layout: PieceMatrix): PieceMatrix {
   }
 
   return roatatedMatrix;
+}
+
+export function getTerminalPiecePosition(state: GameState): Pos {
+  if (!state.activePiece) {
+    throw new Error("no active piece!");
+  }
+
+  const pos = state.activePiece.pos;
+  const coords = pieceToBoardCoordinates(state.activePiece);
+  let dropPos: Pos | undefined = undefined;
+  let i = 0;
+  while (!dropPos) {
+    const nextOffset = i + 1;
+    const nextCoords = coords.map((c) => ({ ...c, y: c.y + nextOffset }));
+    if (nextCoords.some((c) => state.board[c.y]?.[c.x] === 1)) {
+      dropPos = { ...pos, y: pos.y + i };
+    } else if (nextCoords.some((c) => c.y === state.board.length - 1)) {
+      dropPos = { ...pos, y: pos.y + nextOffset };
+    }
+    i++;
+  }
+
+  return dropPos;
+}
+
+export function getPieceProjectionCoords(state: GameState): Coords | null {
+  if (!state.activePiece) {
+    return null;
+  }
+  const terminalPieceState: PieceState = {
+    ...state.activePiece,
+    pos: getTerminalPiecePosition(state),
+  };
+  return pieceToBoardCoordinates(terminalPieceState);
 }

@@ -1,12 +1,16 @@
 import { FC } from "react";
 import { BoardProps } from "./Board.types";
-import { ActiveBlock, Block, OccupiedBlock } from "../Block";
+import { ActiveBlock, Block, OccupiedBlock, ProjectionBlock } from "../Block";
 import "./Board.css";
-import { pieceToBoardCoordinates } from "../../utils/piece";
+import {
+  getPieceProjectionCoords,
+  pieceToBoardCoordinates,
+} from "../../utils/piece";
 
 export const Board: FC<BoardProps> = ({ state }) => {
   const { board, activePiece } = state;
-  const coords = activePiece ? pieceToBoardCoordinates(activePiece) : null;
+  const pieceCoords = activePiece ? pieceToBoardCoordinates(activePiece) : null;
+  const projectionCoords = getPieceProjectionCoords(state);
   return (
     <>
       <div className="board">
@@ -14,11 +18,17 @@ export const Board: FC<BoardProps> = ({ state }) => {
           <div key={i} className="row">
             {row.map((value, j) => {
               const isActivePieceSquare =
-                coords?.find((c) => c.x === j && c.y === i) !== undefined;
+                pieceCoords?.find((c) => c.x === j && c.y === i) !== undefined;
+
+              const isPieceProjectionSquare =
+                projectionCoords?.find((c) => c.x === j && c.y === i) !==
+                undefined;
               if (isActivePieceSquare) {
                 return <ActiveBlock key={j} />;
               } else if (value) {
                 return <OccupiedBlock key={j} />;
+              } else if (isPieceProjectionSquare) {
+                return <ProjectionBlock key={j} />;
               } else {
                 return <Block key={j} />;
               }

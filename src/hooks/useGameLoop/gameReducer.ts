@@ -3,6 +3,7 @@ import { newPiece, rotatePiece } from "../../utils";
 import {
   Direction,
   clearRows,
+  dropPiece,
   moveActivePiece,
   saveActivePiecePosition,
 } from "./gameReducer.utils";
@@ -16,7 +17,8 @@ export type GameAction =
   | { type: "CLEAR_ROWS"; rows: Array<number> }
   | { type: "ROTATE_ACTIVE_PIECE" }
   | { type: "PAUSE" }
-  | { type: "NEW_GAME" };
+  | { type: "NEW_GAME" }
+  | { type: "DROP_PIECE" };
 
 export function gameReducer(state: GameState, action: GameAction): GameState {
   switch (action.type) {
@@ -85,6 +87,8 @@ export function gameReducer(state: GameState, action: GameAction): GameState {
     case "NEW_GAME": {
       return newDefaultGameState(state.size);
     }
+    case "DROP_PIECE":
+      return dropPiece(state);
     default:
       return state;
   }

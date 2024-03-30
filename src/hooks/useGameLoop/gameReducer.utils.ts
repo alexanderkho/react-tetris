@@ -1,5 +1,9 @@
 import { GameState, Pos } from "../../types";
-import { createRow, pieceToBoardCoordinates } from "../../utils";
+import {
+  createRow,
+  getTerminalPiecePosition,
+  pieceToBoardCoordinates,
+} from "../../utils";
 
 export enum Direction {
   LEFT = "LEFT",
@@ -88,4 +92,22 @@ export function clearRows(state: GameState, rows: Array<number>): GameState {
     board: newBoard,
     score: state.score + rowCount,
   };
+}
+
+export function dropPiece(state: GameState): GameState {
+  if (!state.activePiece) {
+    return state;
+  }
+
+  const dropPos = getTerminalPiecePosition(state);
+
+  const nextState: GameState = {
+    ...state,
+    activePiece: {
+      ...state.activePiece,
+      pos: dropPos,
+    },
+  };
+
+  return saveActivePiecePosition(nextState);
 }

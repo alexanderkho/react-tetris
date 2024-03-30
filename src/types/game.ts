@@ -17,12 +17,17 @@ export interface GameState {
    * board size
    * */
   size: BoardDim;
+  /**
+   * current game status
+   * */
   status: "active" | "paused" | "game-over";
   /**
    * number of lines cleared
    * */
   score: number;
-  // TODO: should this be PieceProto?
+  /**
+   * queue of upcoming pieces
+   * */
   pieceQueue: Array<PieceState>;
 }
 

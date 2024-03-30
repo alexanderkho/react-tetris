@@ -3,14 +3,14 @@
   flex-grow: 1;
 }
 
-.filled {
-  background: #838784;
-}
-
 .active {
   background: red;
 }
 
 .occupied {
   background: green;
+}
+
+.projection {
+  background: rgba(138, 39, 194, 0.4);
 }

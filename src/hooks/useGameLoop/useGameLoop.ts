@@ -80,5 +80,7 @@ function useGameKeys(dispatch: React.Dispatch<GameAction>, enabled: boolean) {
     enabled,
   );
 
+  useKeydown(Keys.up, () => dispatch({ type: "DROP_PIECE" }), enabled);
+
   useKeydown(Keys.esc, () => dispatch({ type: "PAUSE" }));
 }

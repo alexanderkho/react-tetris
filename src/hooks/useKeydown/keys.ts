@@ -5,4 +5,5 @@ export enum Keys {
   down = "ArrowDown",
   space = "Space",
   esc = "Escape",
+  up = "ArrowUp",
 }
