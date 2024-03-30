@@ -1,9 +1,13 @@
 import { useEffect } from "react";
 
-export function useKeydown(code: string, callback: VoidFunction) {
+export function useKeydown(
+  code: string,
+  callback: VoidFunction,
+  enabled: boolean = true,
+) {
   useEffect(() => {
     const onKeydown = (event: KeyboardEvent) => {
-      if (event.code === code) {
+      if (event.code === code && enabled) {
         callback();
       }
     };
@@ -11,5 +15,5 @@ export function useKeydown(code: string, callback: VoidFunction) {
     return () => {
       window.removeEventListener("keydown", onKeydown);
     };
-  }, [code, callback]);
+  }, [code, callback, enabled]);
 }

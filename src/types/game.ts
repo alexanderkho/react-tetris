@@ -1,3 +1,4 @@
+import { createBoard } from "../utils";
 import { BoardArray, BoardDim } from "./board";
 import { PieceState } from "./piece";
 
@@ -21,4 +22,14 @@ export interface GameState {
    * number of lines cleared
    * */
   score: number;
+}
+
+export function newDefaultGameState(size: BoardDim): GameState {
+  return {
+    size: size,
+    board: createBoard(size),
+    tickInterval: 400,
+    status: "active",
+    score: 0,
+  };
 }

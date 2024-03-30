@@ -1,5 +1,5 @@
-import { GameState } from "../../types";
-import { createBoard, newPiece, rotatePiece } from "../../utils";
+import { GameState, newDefaultGameState } from "../../types";
+import { newPiece, rotatePiece } from "../../utils";
 import {
   Direction,
   clearRows,
@@ -15,15 +15,15 @@ export type GameAction =
   | { type: "MOVE_ACTIVE_PIECE"; direction: Direction }
   | { type: "CLEAR_ROWS"; rows: Array<number> }
   | { type: "ROTATE_ACTIVE_PIECE" }
-  | { type: "PAUSE" };
+  | { type: "PAUSE" }
+  | { type: "NEW_GAME" };
 
 export function gameReducer(state: GameState, action: GameAction): GameState {
   switch (action.type) {
     case "GAME_OVER":
       return {
         ...state,
-        board: createBoard(state.size),
-        activePiece: undefined,
+        status: "game-over",
       };
     case "CREATE_ACTIVE_PIECE":
       return {
@@ -67,7 +67,6 @@ export function gameReducer(state: GameState, action: GameAction): GameState {
       };
     }
     case "PAUSE": {
-      console.log("hiii");
       return {
         ...state,
         status:
@@ -77,6 +76,9 @@ export function gameReducer(state: GameState, action: GameAction): GameState {
               ? "paused"
               : state.status,
       };
+    }
+    case "NEW_GAME": {
+      return newDefaultGameState(state.size);
     }
     default:
       return state;
