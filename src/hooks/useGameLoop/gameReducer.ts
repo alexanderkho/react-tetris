@@ -29,7 +29,6 @@ export function gameReducer(state: GameState, action: GameAction): GameState {
       const nextQueue = [...state.pieceQueue];
       const nextPiece = nextQueue.shift();
       nextQueue.push(newPiece(state.size));
-      console.log("ok you guys here comes the next queue!", nextQueue);
       return {
         ...state,
         activePiece: nextPiece,
