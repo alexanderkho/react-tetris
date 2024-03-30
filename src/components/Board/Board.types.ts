@@ -1,5 +1,5 @@
-import { BoardDim } from "../../hooks/useGameLoop/types";
+import { GameState } from "../../types";
 
 export interface BoardProps {
-  size: BoardDim;
+  state: GameState;
 }

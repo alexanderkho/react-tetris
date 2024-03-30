@@ -1,111 +1,84 @@
-import { GameState, Pos } from "./types";
-import { createActivePiece, createBoard, createRow } from "./utils";
+import { GameState, newDefaultGameState } from "../../types";
+import { newPiece, rotatePiece } from "../../utils";
+import {
+  Direction,
+  clearRows,
+  moveActivePiece,
+  saveActivePiecePosition,
+} from "./gameReducer.utils";
 
 export type GameAction =
   | { type: "CREATE_ACTIVE_PIECE" }
   | { type: "SAVE_PIECE_POSITION" }
   | { type: "GAME_OVER" }
   | { type: "NEXT_TICK" }
-  | { type: "MOVE_ACTIVE_PIECE"; direction: "LEFT" | "RIGHT" | "DOWN" }
+  | { type: "MOVE_ACTIVE_PIECE"; direction: Direction }
   | { type: "CLEAR_ROWS"; rows: Array<number> }
-  | { type: "ROTATE_ACTIVE_PIECE" };
+  | { type: "ROTATE_ACTIVE_PIECE" }
+  | { type: "PAUSE" }
+  | { type: "NEW_GAME" };
 
 export function gameReducer(state: GameState, action: GameAction): GameState {
   switch (action.type) {
     case "GAME_OVER":
       return {
         ...state,
-        board: createBoard(state.size),
-        activePiece: undefined,
+        status: "game-over",
       };
     case "CREATE_ACTIVE_PIECE":
       return {
         ...state,
-        activePiece: createActivePiece(state.size),
+        activePiece: newPiece(state.size),
       };
-    case "SAVE_PIECE_POSITION": {
-      if (state.activePiece === undefined) {
-        return state;
-      }
-      const newBoard = [...state.board];
-
-      const { coords } = state.activePiece;
-
-      // TODO: can update each row at once to speedup/simplify this
-      for (const { x, y } of coords) {
-        const newRow = [...newBoard[y]];
-        newRow[x] = newRow[x] ? 0 : 1;
-        newBoard.splice(y, 1, newRow);
-      }
-
-      return {
-        ...state,
-        board: newBoard,
-        activePiece: undefined,
-      };
-    }
+    case "SAVE_PIECE_POSITION":
+      return saveActivePiecePosition(state);
     case "NEXT_TICK": {
       // guard against race condition where action is called before a new piece exists
       if (!state.activePiece) {
         return state;
       }
-      const { coords } = state.activePiece;
-      const newCoords: Array<Pos> = coords.map((c) => ({
-        x: c.x,
-        y: c.y + 1,
-      }));
 
+      const currentPos = state.activePiece.pos;
       return {
         ...state,
-        activePiece: { ...state.activePiece, coords: newCoords },
+        activePiece: {
+          ...state.activePiece,
+          pos: { ...currentPos, y: currentPos.y + 1 },
+        },
       };
     }
-    case "MOVE_ACTIVE_PIECE": {
-      // guard against race condition where action is called before a new piece exists
+    case "MOVE_ACTIVE_PIECE":
+      return moveActivePiece(state, action.direction);
+    // TODO: animation effect on row clear
+    case "CLEAR_ROWS":
+      return clearRows(state, action.rows);
+    case "ROTATE_ACTIVE_PIECE": {
+      // TODO:
       if (!state.activePiece) {
         return state;
       }
-      const { coords } = state.activePiece;
-      let newCoords: Array<Pos>;
-
-      if (action.direction === "LEFT") {
-        const isPieceAtLeftBound = coords.some((c) => c.x === 0);
-        newCoords = isPieceAtLeftBound
-          ? coords
-          : coords.map((c) => ({ ...c, x: c.x - 1 }));
-      } else if (action.direction === "RIGHT") {
-        const isPieceAtRightBound = coords.some(
-          (c) => c.x === state.board[0].length - 1,
-        );
-        newCoords = isPieceAtRightBound
-          ? coords
-          : coords.map((c) => ({ ...c, x: c.x + 1 }));
-      } else {
-        newCoords = coords.map((c) => ({ ...c, y: c.y + 1 }));
-      }
-      return {
-        ...state,
-        activePiece: { ...state.activePiece, coords: newCoords },
-      };
-    }
-    // TODO: animation effect on row clear
-    case "CLEAR_ROWS": {
-      const newBoard = [...state.board];
-      const boardWidth = state.size[0];
-
-      action.rows.forEach((r) => {
-        newBoard[r] = createRow(boardWidth);
-      });
 
       return {
         ...state,
-        board: newBoard,
+        activePiece: {
+          ...state.activePiece,
+          layout: rotatePiece(state.activePiece.layout),
+        },
       };
     }
-    case "ROTATE_ACTIVE_PIECE": {
-      // TODO:
-      console.log("ROTATE!");
-      return state;
+    case "PAUSE": {
+      return {
+        ...state,
+        status:
+          state.status === "paused"
+            ? "active"
+            : state.status === "active"
+              ? "paused"
+              : state.status,
+      };
+    }
+    case "NEW_GAME": {
+      return newDefaultGameState(state.size);
     }
     default:
       return state;

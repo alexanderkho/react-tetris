@@ -1,48 +1,51 @@
 import { useEffect, useReducer } from "react";
-import { BoardDim, GameState } from "./types";
+import { gameReducer, GameAction } from "./gameReducer";
+import { useInterval } from "../useInterval";
+import { useKeydown } from "../useKeydown";
+import { Keys } from "../useKeydown/keys";
+import { BoardDim, GameState, newDefaultGameState } from "../../types";
 import {
   checkForClearedRows,
   checkForCollisions,
   checkForGameOver,
-  createBoard,
-} from "./utils";
-import { gameReducer } from "./gameReducer";
-import { useInterval } from "../useInterval";
-import { useKeydown } from "../useKeydown";
-import { Keys } from "../useKeydown/keys";
+} from "../../utils";
+import { Direction } from "./gameReducer.utils";
 
-export function useGameLoop(size: BoardDim): GameState {
-  const [gameState, dispatch] = useReducer(gameReducer, {
-    size: size,
-    board: createBoard(size),
-    tickInterval: 200,
-  });
+interface UseGameLoopReturn {
+  state: GameState;
+  newGame: VoidFunction;
+}
 
-  // keydown handlers
-  useKeydown(Keys.left, () =>
-    dispatch({ type: "MOVE_ACTIVE_PIECE", direction: "LEFT" }),
+export function useGameLoop(size: BoardDim): UseGameLoopReturn {
+  const [gameState, dispatch] = useReducer(gameReducer, size, () =>
+    newDefaultGameState(size),
   );
-  useKeydown(Keys.right, () =>
-    dispatch({ type: "MOVE_ACTIVE_PIECE", direction: "RIGHT" }),
+
+  const isGameActive = gameState.status === "active";
+  useGameKeys(dispatch, isGameActive);
+
+  useInterval(
+    () => {
+      if (checkForCollisions(gameState)) {
+        dispatch({ type: "SAVE_PIECE_POSITION" });
+      }
+      dispatch({ type: "NEXT_TICK" });
+    },
+    isGameActive ? gameState.tickInterval : null,
   );
-  useKeydown(Keys.down, () => {
-    dispatch({ type: "MOVE_ACTIVE_PIECE", direction: "DOWN" });
-  });
 
-  useKeydown(Keys.space, () => {
-    dispatch({ type: "ROTATE_ACTIVE_PIECE" });
-  });
-
-  useInterval(() => dispatch({ type: "NEXT_TICK" }), gameState.tickInterval);
-
+  // TODO: pull me into a separate hook
+  // useGameEffects or something
   useEffect(() => {
+    if (!isGameActive) {
+      return;
+    }
     if (checkForGameOver(gameState)) {
+      console.log("game over", gameState);
       dispatch({ type: "GAME_OVER" });
     } else if (!gameState.activePiece) {
       dispatch({ type: "CREATE_ACTIVE_PIECE" });
       return;
-    } else if (checkForCollisions(gameState)) {
-      dispatch({ type: "SAVE_PIECE_POSITION" });
     }
 
     const clearedRows = checkForClearedRows(gameState);
@@ -51,5 +54,31 @@ export function useGameLoop(size: BoardDim): GameState {
     }
   });
 
-  return gameState;
+  return { state: gameState, newGame: () => dispatch({ type: "NEW_GAME" }) };
+}
+
+function useGameKeys(dispatch: React.Dispatch<GameAction>, enabled: boolean) {
+  useKeydown(
+    Keys.left,
+    () => dispatch({ type: "MOVE_ACTIVE_PIECE", direction: Direction.LEFT }),
+    enabled,
+  );
+  useKeydown(
+    Keys.right,
+    () => dispatch({ type: "MOVE_ACTIVE_PIECE", direction: Direction.RIGHT }),
+    enabled,
+  );
+  useKeydown(
+    Keys.down,
+    () => dispatch({ type: "MOVE_ACTIVE_PIECE", direction: Direction.DOWN }),
+    enabled,
+  );
+
+  useKeydown(
+    Keys.space,
+    () => dispatch({ type: "ROTATE_ACTIVE_PIECE" }),
+    enabled,
+  );
+
+  useKeydown(Keys.esc, () => dispatch({ type: "PAUSE" }));
 }
