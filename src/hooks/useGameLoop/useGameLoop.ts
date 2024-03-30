@@ -1,10 +1,9 @@
 import { useEffect, useReducer } from "react";
-import { GameState } from "./types";
-import { gameReducer } from "./gameReducer.1";
+import { gameReducer } from "./gameReducer";
 import { useInterval } from "../useInterval";
 import { useKeydown } from "../useKeydown";
 import { Keys } from "../useKeydown/keys";
-import { BoardDim } from "../../types";
+import { BoardDim, GameState } from "../../types";
 import {
   checkForClearedRows,
   checkForCollisions,
@@ -17,7 +16,9 @@ export function useGameLoop(size: BoardDim): GameState {
   const [gameState, dispatch] = useReducer(gameReducer, {
     size: size,
     board: createBoard(size),
-    tickInterval: 800,
+    tickInterval: 400,
+    status: "active",
+    score: 0,
   });
 
   // keydown handlers
@@ -35,6 +36,10 @@ export function useGameLoop(size: BoardDim): GameState {
     dispatch({ type: "ROTATE_ACTIVE_PIECE" });
   });
 
+  useKeydown(Keys.esc, () => {
+    dispatch({ type: "PAUSE" });
+  });
+
   useInterval(
     () => {
       if (checkForCollisions(gameState)) {
@@ -43,20 +48,17 @@ export function useGameLoop(size: BoardDim): GameState {
       dispatch({ type: "NEXT_TICK" });
     },
 
-    gameState.tickInterval,
+    gameState.status === "paused" ? null : gameState.tickInterval,
   );
 
   useEffect(() => {
     if (checkForGameOver(gameState)) {
+      console.log("game over", gameState);
       dispatch({ type: "GAME_OVER" });
     } else if (!gameState.activePiece) {
       dispatch({ type: "CREATE_ACTIVE_PIECE" });
       return;
     }
-
-    // else if (checkForCollisions(gameState)) {
-    //   dispatch({ type: "SAVE_PIECE_POSITION" });
-    // }
 
     const clearedRows = checkForClearedRows(gameState);
     if (clearedRows.length) {

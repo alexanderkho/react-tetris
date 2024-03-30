@@ -16,4 +16,9 @@ export interface GameState {
    * board size
    * */
   size: BoardDim;
+  status: "active" | "paused" | "game-over";
+  /**
+   * number of lines cleared
+   * */
+  score: number;
 }

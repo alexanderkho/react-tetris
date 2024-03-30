@@ -1,10 +1,11 @@
-import { createBoard, createRow, newPiece, rotatePiece } from "../../utils";
+import { GameState } from "../../types";
+import { createBoard, newPiece, rotatePiece } from "../../utils";
 import {
   Direction,
+  clearRows,
   moveActivePiece,
   saveActivePiecePosition,
 } from "./gameReducer.utils";
-import { GameState } from "./types";
 
 export type GameAction =
   | { type: "CREATE_ACTIVE_PIECE" }
@@ -13,7 +14,8 @@ export type GameAction =
   | { type: "NEXT_TICK" }
   | { type: "MOVE_ACTIVE_PIECE"; direction: Direction }
   | { type: "CLEAR_ROWS"; rows: Array<number> }
-  | { type: "ROTATE_ACTIVE_PIECE" };
+  | { type: "ROTATE_ACTIVE_PIECE" }
+  | { type: "PAUSE" };
 
 export function gameReducer(state: GameState, action: GameAction): GameState {
   switch (action.type) {
@@ -48,19 +50,8 @@ export function gameReducer(state: GameState, action: GameAction): GameState {
     case "MOVE_ACTIVE_PIECE":
       return moveActivePiece(state, action.direction);
     // TODO: animation effect on row clear
-    case "CLEAR_ROWS": {
-      const newBoard = [...state.board];
-      const boardWidth = state.size[0];
-
-      action.rows.forEach((r) => {
-        newBoard[r] = createRow(boardWidth);
-      });
-
-      return {
-        ...state,
-        board: newBoard,
-      };
-    }
+    case "CLEAR_ROWS":
+      return clearRows(state, action.rows);
     case "ROTATE_ACTIVE_PIECE": {
       // TODO:
       if (!state.activePiece) {
@@ -73,6 +64,18 @@ export function gameReducer(state: GameState, action: GameAction): GameState {
           ...state.activePiece,
           layout: rotatePiece(state.activePiece.layout),
         },
+      };
+    }
+    case "PAUSE": {
+      console.log("hiii");
+      return {
+        ...state,
+        status:
+          state.status === "paused"
+            ? "active"
+            : state.status === "active"
+              ? "paused"
+              : state.status,
       };
     }
     default:

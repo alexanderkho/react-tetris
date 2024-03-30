@@ -1,4 +1,4 @@
-import { GameState, Pos } from "../types";
+import { GameState } from "../types";
 import { pieceToBoardCoordinates } from "./piece";
 
 export function checkForCollisions(state: GameState): boolean {
@@ -24,18 +24,8 @@ export function checkForCollisions(state: GameState): boolean {
 }
 
 export function checkForGameOver(state: GameState): boolean {
-  const { board, activePiece } = state;
-  if (!activePiece) {
-    return false;
-  }
-  const coords = pieceToBoardCoordinates(activePiece);
-  for (const { x, y } of coords) {
-    // TODO: this is probably wrong
-    if (board[y][x] !== 0) {
-      return true;
-    }
-  }
-  return false;
+  const { board } = state;
+  return board[0].some((c) => c === 1);
 }
 
 // returns an array with the indices of cleared rows
@@ -49,4 +39,3 @@ export function checkForClearedRows(state: GameState): Array<number> {
     return acc;
   }, [] as Array<number>);
 }
-

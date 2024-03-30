@@ -1,5 +1,5 @@
 import { GameState, Pos } from "../../types";
-import { pieceToBoardCoordinates } from "../../utils";
+import { createRow, pieceToBoardCoordinates } from "../../utils";
 
 export enum Direction {
   LEFT = "LEFT",
@@ -66,5 +66,26 @@ export function saveActivePiecePosition(state: GameState): GameState {
     ...state,
     board: newBoard,
     activePiece: undefined,
+  };
+}
+
+export function clearRows(state: GameState, rows: Array<number>): GameState {
+  const newBoard = [...state.board];
+  const boardWidth = state.size[0];
+
+  const rowCount = rows.length;
+
+  for (let y = 0; y <= rows[rows.length - 1]; y++) {
+    if (y - rowCount >= 0) {
+      newBoard[y] = state.board[y - rowCount];
+    } else {
+      newBoard[y] = createRow(boardWidth);
+    }
+  }
+
+  return {
+    ...state,
+    board: newBoard,
+    score: state.score + rowCount,
   };
 }
