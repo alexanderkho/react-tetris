@@ -1,5 +1,6 @@
 import "./App.css";
 import { Board } from "./components/Board";
+import { PieceQueue } from "./components/PieceQueue";
 import { useGameLoop } from "./hooks/useGameLoop";
 
 function App() {
@@ -13,12 +14,7 @@ function App() {
         <button onClick={newGame}>New Game</button>
       </div>
       <div className="queue-container">
-        <ul>
-          {state.pieceQueue.map((p, i) => (
-            // TODO: don't use index as key
-            <li key={i}>{p.proto.name}</li>
-          ))}
-        </ul>
+        <PieceQueue queue={state.pieceQueue} />
       </div>
     </div>
   );

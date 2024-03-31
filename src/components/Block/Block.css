@@ -3,10 +3,6 @@
   flex-grow: 1;
 }
 
-.occupied {
-  background: green;
-}
-
 .projection {
   opacity: 0.4;
 }

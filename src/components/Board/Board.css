@@ -1,5 +1,5 @@
 .board {
-  width: 450px;
+  width: 350px;
   height: 700px;
   display: flex;
   flex-direction: column;
