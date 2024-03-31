@@ -6,16 +6,19 @@ import { userEvent } from "@testing-library/user-event";
 type HookProps = {
   code: string;
   callback: VoidFunction;
+  enabled: boolean;
 };
 
 function setup(props: Partial<HookProps> = {}) {
   const initialProps: HookProps = {
     code: "ArrowLeft",
     callback: vi.fn(),
+    enabled: true,
     ...props,
   };
   return renderHook(
-    ({ code, callback }: HookProps) => useKeydown(code, callback),
+    ({ code, callback, enabled }: HookProps) =>
+      useKeydown(code, callback, enabled),
     { initialProps },
   );
 }
@@ -54,10 +57,20 @@ describe("useKeydown", () => {
     expect(callback).toHaveBeenCalledTimes(1);
 
     const callback2 = vi.fn();
-    rerender({ callback: callback2, code: "Tab" });
+    rerender({ callback: callback2, code: "Tab", enabled: true });
 
     await userEvent.keyboard("[ArrowLeft][Tab]");
     expect(callback).toHaveBeenCalledTimes(1);
     expect(callback2).toHaveBeenCalledTimes(1);
   });
+
+  it("disables the callback if the enabled flag is false", async () => {
+    const callback = vi.fn();
+    setup({ callback, enabled: false });
+
+    await userEvent.keyboard("[ArrowLeft]");
+    expect(callback).toHaveBeenCalledTimes(0);
+  });
+
+  // TODO: add test for e.preventDefault
 });

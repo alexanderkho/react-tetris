@@ -7,3 +7,11 @@ export enum Keys {
   esc = "Escape",
   up = "ArrowUp",
 }
+
+export const browserNavigationKeys: Array<Keys> = [
+  Keys.left,
+  Keys.right,
+  Keys.down,
+  Keys.up,
+  Keys.space,
+];

@@ -1,4 +1,5 @@
 import { useEffect } from "react";
+import { Keys, browserNavigationKeys } from "./keys";
 
 export function useKeydown(
   code: string,
@@ -7,9 +8,13 @@ export function useKeydown(
 ) {
   useEffect(() => {
     const onKeydown = (event: KeyboardEvent) => {
-      if (event.code === code && enabled) {
-        callback();
+      if (!enabled || event.code !== code) {
+        return;
       }
+      if (browserNavigationKeys.includes(event.code as Keys)) {
+        event.preventDefault();
+      }
+      callback();
     };
     window.addEventListener("keydown", onKeydown);
     return () => {
