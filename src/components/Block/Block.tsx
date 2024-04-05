@@ -1,5 +1,4 @@
 import { FC } from "react";
-import "./Block.css";
 
 interface BlockProps extends BaseBlockProps {
   variant?: "active" | "inactive" | "occupied" | "projection";
@@ -9,8 +8,13 @@ interface BaseBlockProps {
   color?: string;
 }
 
+// TODO: we shouldn't need 4 variants of `Block`.
 export const Block: FC<BlockProps> = ({ variant = "inactive", color }) => {
-  const className = `block ${variant}`;
+  let className = "border border-gray-400 grow";
+  if (variant === "projection") {
+    className += " opacity-40";
+  }
+
   const style = color ? { background: color } : {};
 
   return <div className={className} style={style} />;

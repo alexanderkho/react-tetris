@@ -1,12 +1,4 @@
 .board {
   width: 350px;
   height: 700px;
-  display: flex;
-  flex-direction: column;
-}
-
-.row {
-  display: flex;
-  width: 100%;
-  flex-grow: 1;
 }

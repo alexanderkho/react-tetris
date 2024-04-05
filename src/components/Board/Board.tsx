@@ -13,9 +13,9 @@ export const Board: FC<BoardProps> = ({ state }) => {
   const projectionCoords = getPieceProjectionCoords(state);
   return (
     <>
-      <div className="board">
+      <div className="board flex flex-col">
         {board.map((row, i) => (
-          <div key={i} className="row">
+          <div key={i} className="flex w-full grow">
             {row.map((square, j) => {
               const isActivePieceSquare =
                 pieceCoords?.find((c) => c.x === j && c.y === i) !== undefined;

@@ -1,12 +1,12 @@
 import { FC } from "react";
 import { PiecePreviewProps, PieceQueueProps } from "./PieceQueue.types";
-import "./PieceQueue.css";
+import { Pieces } from "../../types";
 
 export const PieceQueue: FC<PieceQueueProps> = ({ queue }) => {
   return (
-    <div className="piece-queue">
+    <div className="flex flex-col w-full ml-2">
       {queue.map((piece, i) => (
-        <div className="queue-item" key={i}>
+        <div className="flex flex-col w-100 my-2" key={i}>
           <PiecePreview piece={piece.proto} />
         </div>
       ))}
@@ -16,18 +16,30 @@ export const PieceQueue: FC<PieceQueueProps> = ({ queue }) => {
 
 export const PiecePreview: FC<PiecePreviewProps> = ({ piece }) => {
   return piece.matrix.map((row, j) => (
-    <div className="queue-row" key={j}>
+    <div className="w-full flex" key={j}>
       {row.map((cell, k) =>
         cell === 1 ? (
           <div
-            className="queue-block occupied"
+            className="size-5 border-gray-500 border"
             style={{ background: piece.color }}
             key={k}
           />
         ) : (
-          <div className="queue-block" key={k} />
+          <div className="size-5 border-transparent border" key={k} />
         ),
       )}
     </div>
   ));
+};
+
+// TODO: remove me
+export const PreviewContainer: FC = () => {
+  const pieces = Object.values(Pieces);
+  return (
+    <>
+      {pieces.map((p) => (
+        <PiecePreview piece={p} />
+      ))}
+    </>
+  );
 };
