@@ -6,6 +6,7 @@ export enum Keys {
   space = "Space",
   esc = "Escape",
   up = "ArrowUp",
+  shiftLeft = "ShiftLeft",
 }
 
 export const browserNavigationKeys: Array<Keys> = [

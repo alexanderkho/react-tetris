@@ -1,15 +1,12 @@
 import { GameState, newDefaultGameState } from "../../types";
-import {
-  getRandomPieceProto,
-  initializePieceStateFromProto,
-  rotatePiece,
-} from "../../utils";
+import { rotatePiece } from "../../utils";
 import {
   Direction,
   clearRows,
   dropPiece,
   holdPiece,
   moveActivePiece,
+  nextActivePiece,
   saveActivePiecePosition,
 } from "./gameReducer.utils";
 
@@ -34,17 +31,7 @@ export function gameReducer(state: GameState, action: GameAction): GameState {
         status: "game-over",
       };
     case "NEXT_PIECE": {
-      const nextQueue = [...state.pieceQueue];
-      const nextPiece = initializePieceStateFromProto(
-        state.size,
-        nextQueue.shift()!,
-      );
-      nextQueue.push(getRandomPieceProto());
-      return {
-        ...state,
-        activePiece: nextPiece,
-        pieceQueue: nextQueue,
-      };
+      return nextActivePiece(state);
     }
     case "SAVE_PIECE_POSITION":
       return saveActivePiecePosition(state);

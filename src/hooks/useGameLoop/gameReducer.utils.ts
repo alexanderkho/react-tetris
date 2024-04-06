@@ -1,7 +1,9 @@
 import { GameState, Pos } from "../../types";
 import {
   createRow,
+  getRandomPieceProto,
   getTerminalPiecePosition,
+  initializePieceStateFromProto,
   pieceToBoardCoordinates,
 } from "../../utils";
 
@@ -113,8 +115,36 @@ export function dropPiece(state: GameState): GameState {
   return saveActivePiecePosition(nextState);
 }
 
+export function nextActivePiece(state: GameState): GameState {
+  const nextQueue = [...state.pieceQueue];
+  const nextPiece = initializePieceStateFromProto(
+    state.size,
+    nextQueue.shift()!,
+  );
+  nextQueue.push(getRandomPieceProto());
+  return {
+    ...state,
+    activePiece: nextPiece,
+    pieceQueue: nextQueue,
+  };
+}
+
 // TODO:
 export function holdPiece(state: GameState): GameState {
+  if (!state.activePiece) {
+    return state;
+  }
   console.log("HOLD PIECE");
-  return state;
+  if (!state.holdPiece) {
+    return {
+      ...nextActivePiece(state),
+      holdPiece: state.activePiece.proto,
+    };
+  } else {
+    return {
+      ...state,
+      activePiece: initializePieceStateFromProto(state.size, state.holdPiece),
+      holdPiece: state.activePiece.proto,
+    };
+  }
 }

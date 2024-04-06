@@ -34,7 +34,7 @@ export interface GameState {
   /**
    * currently on-hold piece
    * */
-  holdPiece?: PieceState;
+  holdPiece?: PieceProto;
 }
 
 export function newDefaultGameState(size: BoardDim): GameState {
