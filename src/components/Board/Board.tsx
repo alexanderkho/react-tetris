@@ -13,7 +13,7 @@ export const Board: FC<BoardProps> = ({ state }) => {
   const projectionCoords = getPieceProjectionCoords(state);
   return (
     <>
-      <div className="board flex flex-col">
+      <div className="board flex flex-col border border-gray-500 rounded-md">
         {board.map((row, i) => (
           <div key={i} className="flex w-full grow">
             {row.map((square, j) => {

@@ -4,7 +4,7 @@ import { Pieces } from "../../types";
 
 export const PieceQueue: FC<PieceQueueProps> = ({ queue }) => {
   return (
-    <div className="flex flex-col w-full ml-2">
+    <div className="flex flex-col w-full items-center">
       {queue.map((piece, i) => (
         <div className="flex flex-col w-100 my-2" key={i}>
           <PiecePreview piece={piece} />

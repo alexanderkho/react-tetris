@@ -10,7 +10,7 @@ interface BaseBlockProps {
 
 // TODO: we shouldn't need 4 variants of `Block`.
 export const Block: FC<BlockProps> = ({ variant = "inactive", color }) => {
-  let className = "border border-gray-400 grow";
+  let className = "border border-gray-500 grow";
   if (variant === "projection") {
     className += " opacity-40";
   }
