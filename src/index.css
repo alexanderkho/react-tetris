@@ -11,6 +11,6 @@
 
 @layer base {
   body {
-    @apply bg-sky-200;
+    @apply bg-slate-200;
   }
 }
