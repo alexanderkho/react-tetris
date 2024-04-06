@@ -9,20 +9,30 @@ export interface PieceProto {
   origin: [number, number]; // [col, row]
 }
 
-export const Pieces: Record<string, PieceProto> = {
+export enum PieceName {
+  square = "square",
+  line = "line",
+  skew = "skew",
+  skewReverse = "skewReverse",
+  tee = "tee",
+  ell = "ell",
+  ellReverse = "ellReverse",
+}
+
+export const Pieces: Record<PieceName, PieceProto> = {
   square: {
     name: "Square",
     matrix: [
       [1, 1],
       [1, 1],
     ],
-    color: "#5879db",
+    color: "#facc15",
     origin: [0, 0],
   },
   line: {
     name: "Line",
     matrix: [[1], [1], [1], [1]],
-    color: "#fcba03",
+    color: "#059669",
     origin: [0, 0],
   },
   skew: {
@@ -31,7 +41,7 @@ export const Pieces: Record<string, PieceProto> = {
       [0, 1, 1],
       [1, 1, 0],
     ],
-    color: "#edf55b",
+    color: "#1d4ed8",
     origin: [0, 1],
   },
   skewReverse: {
@@ -40,7 +50,7 @@ export const Pieces: Record<string, PieceProto> = {
       [1, 1, 0],
       [0, 1, 1],
     ],
-    color: "#5dbf08",
+    color: "#ef4444",
     origin: [0, 1],
   },
   tee: {
@@ -49,7 +59,7 @@ export const Pieces: Record<string, PieceProto> = {
       [1, 1, 1],
       [0, 1, 0],
     ],
-    color: "#09e8d2",
+    color: "#d946ef",
     origin: [0, 1],
   },
   ell: {
@@ -59,7 +69,7 @@ export const Pieces: Record<string, PieceProto> = {
       [1, 0],
       [1, 1],
     ],
-    color: "#e3104f",
+    color: "#f97316",
     origin: [0, 0],
   },
   ellReverse: {
@@ -69,7 +79,7 @@ export const Pieces: Record<string, PieceProto> = {
       [0, 1],
       [1, 1],
     ],
-    color: "#9210e8",
+    color: "#22d3ee",
     origin: [0, 0],
   },
 };

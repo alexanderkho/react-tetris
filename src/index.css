@@ -9,6 +9,8 @@
   text-align: center;
 }
 
-body {
-  background: #d4d1c1;
+@layer base {
+  body {
+    @apply bg-sky-200;
+  }
 }

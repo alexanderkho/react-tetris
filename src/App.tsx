@@ -5,16 +5,15 @@ import { useGameLoop } from "./hooks/useGameLoop";
 function App() {
   const { state, newGame } = useGameLoop([10, 20]);
   return (
-    <div className="flex">
-      <h1 className="text-3xl font-bold underline">Hello world!</h1>
-      <div>
-        <Board state={state} />
-      </div>
+    <div className="flex justify-center">
+      <Board state={state} />
       <div>
         <PieceQueue queue={state.pieceQueue} />
         <p>Game status: {state.status}</p>
         <p>Score: {state.score}</p>
-        <button onClick={newGame}>New Game</button>
+        <button onClick={newGame} className="bg-emerald-300 p-2 rounded">
+          New Game
+        </button>
       </div>
     </div>
   );
