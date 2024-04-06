@@ -2,6 +2,8 @@ import { createBoard, initializePieceQueue } from "../utils";
 import { BoardArray, BoardDim } from "./board";
 import { PieceState } from "./piece";
 
+export type GameStatus = "active" | "paused" | "game-over";
+
 export interface GameState {
   board: BoardArray;
   /**
@@ -20,7 +22,7 @@ export interface GameState {
   /**
    * current game status
    * */
-  status: "active" | "paused" | "game-over";
+  status: GameStatus;
   /**
    * number of lines cleared
    * */

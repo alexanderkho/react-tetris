@@ -1,4 +1,5 @@
 import { Board } from "./components/Board";
+import { GameOverlay } from "./components/GameOverlay/GameOverlay";
 import { PieceQueue } from "./components/PieceQueue";
 import { useGameLoop } from "./hooks/useGameLoop";
 
@@ -7,14 +8,12 @@ function App() {
   return (
     <div className="flex justify-center">
       <Board state={state} />
-      <div>
+      <div className="ml-2">
         <PieceQueue queue={state.pieceQueue} />
         <p>Game status: {state.status}</p>
         <p>Score: {state.score}</p>
-        <button onClick={newGame} className="bg-emerald-300 p-2 rounded">
-          New Game
-        </button>
       </div>
+      <GameOverlay status={state.status} onNewGame={newGame} />
     </div>
   );
 }
