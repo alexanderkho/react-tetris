@@ -7,7 +7,7 @@ export const PieceQueue: FC<PieceQueueProps> = ({ queue }) => {
     <div className="flex flex-col w-full ml-2">
       {queue.map((piece, i) => (
         <div className="flex flex-col w-100 my-2" key={i}>
-          <PiecePreview piece={piece.proto} />
+          <PiecePreview piece={piece} />
         </div>
       ))}
     </div>

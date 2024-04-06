@@ -1,9 +1,14 @@
 import { GameState, newDefaultGameState } from "../../types";
-import { newPiece, rotatePiece } from "../../utils";
+import {
+  getRandomPieceProto,
+  initializePieceStateFromProto,
+  rotatePiece,
+} from "../../utils";
 import {
   Direction,
   clearRows,
   dropPiece,
+  holdPiece,
   moveActivePiece,
   saveActivePiecePosition,
 } from "./gameReducer.utils";
@@ -18,7 +23,8 @@ export type GameAction =
   | { type: "ROTATE_ACTIVE_PIECE" }
   | { type: "PAUSE" }
   | { type: "NEW_GAME" }
-  | { type: "DROP_PIECE" };
+  | { type: "DROP_PIECE" }
+  | { type: "HOLD_PIECE" };
 
 export function gameReducer(state: GameState, action: GameAction): GameState {
   switch (action.type) {
@@ -29,8 +35,11 @@ export function gameReducer(state: GameState, action: GameAction): GameState {
       };
     case "NEXT_PIECE": {
       const nextQueue = [...state.pieceQueue];
-      const nextPiece = nextQueue.shift();
-      nextQueue.push(newPiece(state.size));
+      const nextPiece = initializePieceStateFromProto(
+        state.size,
+        nextQueue.shift()!,
+      );
+      nextQueue.push(getRandomPieceProto());
       return {
         ...state,
         activePiece: nextPiece,
@@ -89,6 +98,8 @@ export function gameReducer(state: GameState, action: GameAction): GameState {
     }
     case "DROP_PIECE":
       return dropPiece(state);
+    case "HOLD_PIECE":
+      return holdPiece(state);
     default:
       return state;
   }

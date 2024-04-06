@@ -112,3 +112,9 @@ export function dropPiece(state: GameState): GameState {
 
   return saveActivePiecePosition(nextState);
 }
+
+// TODO:
+export function holdPiece(state: GameState): GameState {
+  console.log("HOLD PIECE");
+  return state;
+}

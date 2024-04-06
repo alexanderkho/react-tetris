@@ -3,6 +3,7 @@ import {
   Coords,
   GameState,
   PieceMatrix,
+  PieceName,
   PieceProto,
   PieceState,
   Pieces,
@@ -10,14 +11,15 @@ import {
 } from "../types";
 
 export function getRandomPieceProto(): PieceProto {
-  const keys = Object.keys(Pieces);
+  const keys = Object.keys(PieceName) as Array<PieceName>;
   const randomPieceIdx = Math.floor(Math.random() * keys.length);
   return Pieces[keys[randomPieceIdx]];
 }
 
-export function newPiece(size: BoardDim): PieceState {
-  const proto = getRandomPieceProto();
-
+export function initializePieceStateFromProto(
+  size: BoardDim,
+  proto: PieceProto,
+): PieceState {
   const boardWidth = size[0];
   const startingPos: Pos = {
     x: Math.floor(boardWidth / 2),
@@ -27,13 +29,10 @@ export function newPiece(size: BoardDim): PieceState {
   return { proto, pos: startingPos, layout: proto.matrix };
 }
 
-export function initializePieceQueue(
-  boardSize: BoardDim,
-  queueSize: number = 4,
-): Array<PieceState> {
+export function initializePieceQueue(queueSize: number = 4): Array<PieceProto> {
   const queue = [];
   for (let i = 0; i < queueSize; i++) {
-    queue.push(newPiece(boardSize));
+    queue.push(getRandomPieceProto());
   }
   return queue;
 }

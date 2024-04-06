@@ -1,6 +1,6 @@
 import { createBoard, initializePieceQueue } from "../utils";
 import { BoardArray, BoardDim } from "./board";
-import { PieceState } from "./piece";
+import { PieceProto, PieceState } from "./piece";
 
 export type GameStatus = "active" | "paused" | "game-over";
 
@@ -30,7 +30,11 @@ export interface GameState {
   /**
    * queue of upcoming pieces
    * */
-  pieceQueue: Array<PieceState>;
+  pieceQueue: Array<PieceProto>;
+  /**
+   * currently on-hold piece
+   * */
+  holdPiece?: PieceState;
 }
 
 export function newDefaultGameState(size: BoardDim): GameState {
@@ -40,6 +44,6 @@ export function newDefaultGameState(size: BoardDim): GameState {
     tickInterval: 400,
     status: "active",
     score: 0,
-    pieceQueue: initializePieceQueue(size),
+    pieceQueue: initializePieceQueue(),
   };
 }

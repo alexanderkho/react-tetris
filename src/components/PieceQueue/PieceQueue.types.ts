@@ -1,7 +1,7 @@
-import { PieceProto, PieceState } from "../../types";
+import { PieceProto } from "../../types";
 
 export interface PieceQueueProps {
-  queue: Array<PieceState>;
+  queue: Array<PieceProto>;
 }
 
 export interface PiecePreviewProps {
