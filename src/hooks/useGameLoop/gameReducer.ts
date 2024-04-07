@@ -18,7 +18,7 @@ export type GameAction =
   | { type: "MOVE_ACTIVE_PIECE"; direction: Direction }
   | { type: "CLEAR_ROWS"; rows: Array<number> }
   | { type: "ROTATE_ACTIVE_PIECE" }
-  | { type: "PAUSE" }
+  | { type: "PAUSE"; paused?: boolean }
   | { type: "NEW_GAME" }
   | { type: "DROP_PIECE" }
   | { type: "HOLD_PIECE" };

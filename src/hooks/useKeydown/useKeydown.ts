@@ -5,7 +5,12 @@ export function useKeydown(
   code: string,
   callback: VoidFunction,
   enabled: boolean = true,
+  element?: HTMLElement | null,
 ) {
+  const elToAttach = element ?? window;
+  if (code === Keys.esc) {
+    console.log("TEEHEE", element);
+  }
   useEffect(() => {
     const onKeydown = (event: KeyboardEvent) => {
       if (!enabled || event.code !== code) {
@@ -16,9 +21,9 @@ export function useKeydown(
       }
       callback();
     };
-    window.addEventListener("keydown", onKeydown);
+    elToAttach.addEventListener("keydown", onKeydown as EventListener);
     return () => {
-      window.removeEventListener("keydown", onKeydown);
+      elToAttach.removeEventListener("keydown", onKeydown as EventListener);
     };
-  }, [code, callback, enabled]);
+  }, [code, callback, enabled, elToAttach]);
 }

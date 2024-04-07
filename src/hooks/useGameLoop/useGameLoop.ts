@@ -14,6 +14,7 @@ import { Direction } from "./gameReducer.utils";
 interface UseGameLoopReturn {
   state: GameState;
   newGame: VoidFunction;
+  pauseGame: VoidFunction;
 }
 
 export function useGameLoop(size: BoardDim): UseGameLoopReturn {
@@ -54,7 +55,10 @@ export function useGameLoop(size: BoardDim): UseGameLoopReturn {
     }
   });
 
-  return { state: gameState, newGame: () => dispatch({ type: "NEW_GAME" }) };
+  const newGame = () => dispatch({ type: "NEW_GAME" });
+  const pauseGame = () => dispatch({ type: "PAUSE" });
+
+  return { state: gameState, newGame, pauseGame };
 }
 
 function useGameKeys(dispatch: React.Dispatch<GameAction>, enabled: boolean) {
@@ -82,7 +86,7 @@ function useGameKeys(dispatch: React.Dispatch<GameAction>, enabled: boolean) {
 
   useKeydown(Keys.up, () => dispatch({ type: "DROP_PIECE" }), enabled);
 
-  useKeydown(Keys.esc, () => dispatch({ type: "PAUSE" }));
+  // useKeydown(Keys.esc, () => dispatch({ type: "PAUSE" }));
 
   useKeydown(Keys.shiftLeft, () => dispatch({ type: "HOLD_PIECE" }), enabled);
 }
