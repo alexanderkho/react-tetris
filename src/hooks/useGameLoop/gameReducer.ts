@@ -1,5 +1,4 @@
 import { GameState, newDefaultGameState } from "../../types";
-import { rotatePiece } from "../../utils";
 import {
   Direction,
   clearRows,
@@ -7,6 +6,7 @@ import {
   holdPiece,
   moveActivePiece,
   nextActivePiece,
+  rotatePiece,
   saveActivePiecePosition,
 } from "./gameReducer.utils";
 
@@ -55,20 +55,8 @@ export function gameReducer(state: GameState, action: GameAction): GameState {
     // TODO: animation effect on row clear
     case "CLEAR_ROWS":
       return clearRows(state, action.rows);
-    case "ROTATE_ACTIVE_PIECE": {
-      // TODO:
-      if (!state.activePiece) {
-        return state;
-      }
-
-      return {
-        ...state,
-        activePiece: {
-          ...state.activePiece,
-          layout: rotatePiece(state.activePiece.layout),
-        },
-      };
-    }
+    case "ROTATE_ACTIVE_PIECE":
+      return rotatePiece(state);
     case "PAUSE": {
       return {
         ...state,

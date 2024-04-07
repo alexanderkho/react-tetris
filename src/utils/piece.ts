@@ -2,7 +2,6 @@ import {
   BoardDim,
   Coords,
   GameState,
-  PieceMatrix,
   PieceName,
   PieceProto,
   PieceState,
@@ -54,20 +53,6 @@ export function pieceToBoardCoordinates(piece: PieceState): Coords {
     });
     return acc;
   }, [] as Array<Pos>);
-}
-
-export function rotatePiece(layout: PieceMatrix): PieceMatrix {
-  const roatatedMatrix: PieceMatrix = [];
-
-  for (let x = 0; x < layout[0].length; x++) {
-    const newRow: Array<0 | 1> = [];
-    for (let y = layout.length - 1; y >= 0; y--) {
-      newRow.push(layout[y][x]);
-    }
-    roatatedMatrix.push(newRow);
-  }
-
-  return roatatedMatrix;
 }
 
 export function getTerminalPiecePosition(state: GameState): Pos {

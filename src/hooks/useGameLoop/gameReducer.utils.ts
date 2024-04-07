@@ -1,4 +1,4 @@
-import { GameState, Pos } from "../../types";
+import { GameState, PieceMatrix, PieceState, Pos } from "../../types";
 import {
   createRow,
   getRandomPieceProto,
@@ -28,22 +28,15 @@ export function moveActivePiece(
     return state;
   }
   const { pos } = state.activePiece;
-  const coords = pieceToBoardCoordinates(state.activePiece);
 
   const offset = directionToOffset[direction];
   const requestedPos = { x: pos.x + offset.x, y: pos.y + offset.y };
-  const requestedCoords = coords.map((c) => ({
-    x: c.x + offset.x,
-    y: c.y + offset.y,
-  }));
+  const requestedPieceState: PieceState = {
+    ...state.activePiece,
+    pos: requestedPos,
+  };
 
-  const canMove = requestedCoords.every(
-    (c) =>
-      c.x >= 0 &&
-      c.x < state.board[0].length &&
-      c.y < state.board.length &&
-      state.board[c.y][c.x].value === 0,
-  );
+  const canMove = isLegalMove(state, requestedPieceState);
 
   const newPos = canMove ? requestedPos : pos;
 
@@ -129,7 +122,6 @@ export function nextActivePiece(state: GameState): GameState {
   };
 }
 
-// TODO:
 export function holdPiece(state: GameState): GameState {
   if (!state.activePiece) {
     return state;
@@ -147,4 +139,41 @@ export function holdPiece(state: GameState): GameState {
       holdPiece: state.activePiece.proto,
     };
   }
+}
+
+export function rotatePiece(state: GameState): GameState {
+  if (!state.activePiece) {
+    return state;
+  }
+  const roatatedMatrix: PieceMatrix = [];
+  const { layout } = state.activePiece;
+
+  for (let x = 0; x < layout[0].length; x++) {
+    const newRow: Array<0 | 1> = [];
+    for (let y = layout.length - 1; y >= 0; y--) {
+      newRow.push(layout[y][x]);
+    }
+    roatatedMatrix.push(newRow);
+  }
+
+  const rotatedPiece: PieceState = {
+    ...state.activePiece,
+    layout: roatatedMatrix,
+  };
+
+  const canRotate = isLegalMove(state, rotatedPiece);
+
+  return canRotate ? { ...state, activePiece: rotatedPiece } : state;
+}
+
+function isLegalMove(prevState: GameState, requestedPieceState: PieceState) {
+  const requestedCoords = pieceToBoardCoordinates(requestedPieceState);
+  return requestedCoords.every(
+    (c) =>
+      c.x >= 0 &&
+      c.x < prevState.board[0].length &&
+      c.y < prevState.board.length &&
+      prevState.board[c.y]?.[c.x] !== undefined &&
+      prevState.board[c.y][c.x].value === 0,
+  );
 }
