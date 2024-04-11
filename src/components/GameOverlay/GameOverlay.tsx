@@ -25,6 +25,25 @@ export const GameOverlay: FC<GameOverlayProps> = ({ status, onNewGame }) => {
         >
           New Game
         </button>
+        <div>
+          <a
+            href="https://github.com/alexanderkho/react-tetris"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="text-indigo-600 underline"
+          >
+            Code
+          </a>
+          <br />
+          <a
+            href="https://www.linkedin.com/in/alexander-k-ho/"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="text-indigo-600 underline"
+          >
+            About me
+          </a>
+        </div>
       </OverlayModal>
     </div>
   );
@@ -39,7 +58,7 @@ const OverlayModal: FC<PropsWithChildren<OverlayModalProps>> = ({
   title,
 }) => {
   return (
-    <div className="mt-40 w-2/3 ml-auto mr-auto opacity-90 rounded-lg border-indigo-600 border-4 bg-neutral-200">
+    <div className="mt-40 ml-auto mr-auto opacity-90 rounded-lg border-indigo-600 border-4 bg-neutral-200 sm:w-full lg:w-2/5 md:w-2/3 2xl:w-1/3">
       <div className="p-4 bg-indigo-600 text-white">
         <h2 className="text-2xl font-bold">{title}</h2>
       </div>
@@ -51,20 +70,6 @@ const OverlayModal: FC<PropsWithChildren<OverlayModalProps>> = ({
 export const PausedOverlayContent = () => {
   return (
     <>
-      <h3 className="text-xl font-semibold">What is this?</h3>
-      <p>
-        A simple Tetris implementation built with React + TypeScript.
-        <br />
-        Built by{" "}
-        <a
-          href="https://www.linkedin.com/in/alexander-k-ho/"
-          target="_blank"
-          rel="noopener noreferrer"
-          className="text-indigo-600 underline"
-        >
-          me
-        </a>
-      </p>
       <div className="mt-4 text-left">
         <h4 className="font-semibold">Controls:</h4>
         <ul>
